@@ -71,6 +71,7 @@ class Character {
     crowns,
     reputation,
     characterClass,
+    xp,
     aSkills,
     bSkills,
     cSkills
@@ -146,6 +147,7 @@ class Character {
     this.crowns = crowns;
     this.reputation = reputation;
     this.characterClass = characterClass;
+    this.xp = xp;
     this.aSkills = aSkills;
     this.bSkills = bSkills;
     this.cSkills = cSkills;
@@ -164,13 +166,13 @@ const player = new Character(
   8, // body
   5, // luck
   7, // speed
-  8, // vigor
+  2, // vigor
   9, // run
   6, // stun
   7, // leap
   50, // hp
   100, // stamina
-  20, // encumbrance
+  60, // encumbrance
   10, // recovery
   5, // punch
   6, // kick
@@ -224,14 +226,12 @@ const player = new Character(
   100, // crowns
   50, // reputation
   "witcher", // characterClass
+  0, //xp
   [], // aSkills
   [], // bSkills
   [] // cSkills
 );
 
-let xp = 0;
-let health = 100;
-let energy = 100;
 let date = new Date("1247-05-01T00:00:00");
 let month = date.getMonth();
 let day = date.getDate();
@@ -263,8 +263,8 @@ const eatButton = document.querySelector("#eatButton");
 const inventoryButton = document.querySelector("#inventoryButton");
 const text = document.querySelector("#text");
 const xpText = document.querySelector("#xpText");
-const healthText = document.querySelector("#healthText");
-const energyText = document.querySelector("#energyText");
+const hpText = document.querySelector("#hpText");
+const staminaText = document.querySelector("#staminaText");
 
 const tempText = document.querySelector("#temp");
 const timeText = document.querySelector("#time");
@@ -604,7 +604,7 @@ function travel() {
 
   console.log("added time: " + addedTime);
   setTerrain();
-  spendEnergy(3);
+  spendStamina(3);
   return addedTime;
 }
 
@@ -742,7 +742,7 @@ function forage() {
     text.innerText = `You spent an hour foragaing but couldn't find anything.`;
     timeSpent = 60;
   }
-  spendEnergy(2);
+  spendStamina(2);
   tellTime(timeSpent);
 }
 
@@ -794,21 +794,21 @@ function calculateTimeSpent() {
 
 inventoryButton.addEventListener("click", function () {
   let inventoryText = "Your inventory contains: ";
-  inventory.forEach((item) => {
+  player.inventory.forEach((item) => {
     inventoryText += ` ${item.name},`;
   });
   inventoryText = inventoryText.slice(0, -1); // Remove the last comma
   text.innerText = inventoryText;
 });
 
-function tellStats() {
-  xpText.innerText = xp;
-  healthText.innerText = health;
-  energyText.innerText = energy;
+function tellStats(x) {
+  xpText.innerText = x.xp;
+  hpText.innerText = x.hp;
+  staminaText.innerText = x.stamina;
 }
 
-function spendEnergy(x) {
-  energy = energy - (Math.floor(Math.random() * 2) + 1);
+function spendStamina(x) {
+  x.stamina = x.stamina - (Math.floor(Math.random() * 2) + 1);
 }
 
 function eat() {}
