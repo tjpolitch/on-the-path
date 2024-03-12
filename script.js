@@ -1,4 +1,233 @@
-//import jstat from jstat;
+class Character {
+  constructor(
+    player,
+    name,
+    intellect,
+    empathy,
+    reflexes,
+    craft,
+    dexterity,
+    will,
+    body,
+    luck,
+    speed,
+    vigor,
+    run,
+    stun,
+    leap,
+    hp,
+    stamina,
+    encumbrance,
+    recovery,
+    punch,
+    kick,
+    awareness,
+    business,
+    deduction,
+    education,
+    language,
+    monsterLore,
+    social,
+    streetWise,
+    tactics,
+    teaching,
+    wildernessSurvival,
+    brawling,
+    dodgeEscape,
+    melee,
+    riding,
+    sailing,
+    smallBlades,
+    staffSpear,
+    swordsmanship,
+    physique,
+    endurance,
+    charisma,
+    deceit,
+    fineArts,
+    gambling,
+    groomingStyle,
+    humanPerception,
+    leadership,
+    persuasion,
+    performance,
+    seduction,
+    alchemy,
+    crafting,
+    disguise,
+    firstAid,
+    forgery,
+    pickLock,
+    trapCrafting,
+    courage,
+    hexWeaving,
+    intimidation,
+    spellCasting,
+    resistMagic,
+    resistCoercion,
+    ritualCrafting,
+    languages,
+    inventory,
+    crowns,
+    reputation,
+    characterClass,
+    aSkills,
+    bSkills,
+    cSkills
+  ) {
+    this.player = player;
+    this.name = name;
+    this.intellect = intellect;
+    this.empathy = empathy;
+    this.reflexes = reflexes;
+    this.craft = craft;
+    this.dexterity = dexterity;
+    this.will = will;
+    this.body = body;
+    this.luck = luck;
+    this.speed = speed;
+    this.vigor = vigor;
+    this.run = run;
+    this.stun = stun;
+    this.leap = leap;
+    this.hp = hp;
+    this.stamina = stamina;
+    this.encumbrance = encumbrance;
+    this.recovery = recovery;
+    this.punch = punch;
+    this.kick = kick;
+    this.awareness = awareness;
+    this.business = business;
+    this.deduction = deduction;
+    this.education = education;
+    this.language = language;
+    this.monsterLore = monsterLore;
+    this.social = social;
+    this.streetWise = streetWise;
+    this.tactics = tactics;
+    this.teaching = teaching;
+    this.wildernessSurvival = wildernessSurvival;
+    this.brawling = brawling;
+    this.dodgeEscape = dodgeEscape;
+    this.melee = melee;
+    this.riding = riding;
+    this.sailing = sailing;
+    this.smallBlades = smallBlades;
+    this.staffSpear = staffSpear;
+    this.swordsmanship = swordsmanship;
+    this.physique = physique;
+    this.endurance = endurance;
+    this.charisma = charisma;
+    this.deceit = deceit;
+    this.fineArts = fineArts;
+    this.gambling = gambling;
+    this.groomingStyle = groomingStyle;
+    this.humanPerception = humanPerception;
+    this.leadership = leadership;
+    this.persuasion = persuasion;
+    this.performance = performance;
+    this.seduction = seduction;
+    this.alchemy = alchemy;
+    this.crafting = crafting;
+    this.disguise = disguise;
+    this.firstAid = firstAid;
+    this.forgery = forgery;
+    this.pickLock = pickLock;
+    this.trapCrafting = trapCrafting;
+    this.courage = courage;
+    this.hexWeaving = hexWeaving;
+    this.intimidation = intimidation;
+    this.spellCasting = spellCasting;
+    this.resistMagic = resistMagic;
+    this.resistCoercion = resistCoercion;
+    this.ritualCrafting = ritualCrafting;
+    this.languages = languages;
+    this.inventory = inventory;
+    this.crowns = crowns;
+    this.reputation = reputation;
+    this.characterClass = characterClass;
+    this.aSkills = aSkills;
+    this.bSkills = bSkills;
+    this.cSkills = cSkills;
+  }
+}
+
+const player = new Character(
+  true,
+  "Hendrik",
+  5, // intellect
+  7, // empathy
+  6, // reflexes
+  8, // craft
+  7, // dexterity
+  6, // will
+  8, // body
+  5, // luck
+  7, // speed
+  8, // vigor
+  9, // run
+  6, // stun
+  7, // leap
+  50, // hp
+  100, // stamina
+  20, // encumbrance
+  10, // recovery
+  5, // punch
+  6, // kick
+  8, // awareness
+  7, // business
+  6, // deduction
+  6, // education
+  7, // language
+  6, // monsterLore
+  7, // social
+  6, // streetWise
+  7, // tactics
+  8, // teaching
+  6, // wildernessSurvival
+  7, // brawling
+  8, // dodgeEscape
+  7, // melee
+  5, // riding
+  4, // sailing
+  7, // smallBlades
+  7, // staffSpear
+  8, // swordsmanship
+  8, // physique
+  7, // endurance
+  6, // charisma
+  7, // deceit
+  6, // fineArts
+  5, // gambling
+  7, // groomingStyle
+  8, // humanPerception
+  7, // leadership
+  8, // persuasion
+  7, // performance
+  7, // seduction
+  5, // alchemy
+  6, // crafting
+  5, // disguise
+  7, // firstAid
+  6, // forgery
+  7, // pickLock
+  6, // trapCrafting
+  8, // courage
+  5, // hexWeaving
+  7, // intimidation
+  6, // spellCasting
+  8, // resistMagic
+  7, // resistCoercion
+  6, // ritualCrafting
+  ["common", "elder", "dwarven"], // languages
+  [], // inventory (empty for now)
+  100, // crowns
+  50, // reputation
+  "witcher", // characterClass
+  [], // aSkills
+  [], // bSkills
+  [] // cSkills
+);
 
 let xp = 0;
 let health = 100;
@@ -25,10 +254,6 @@ let foundItems = [];
 let addedTime = 0;
 let energyDrain = 1;
 let nightDifficulty = 3;
-
-//let time = Math.round(date.getTime() / 10000000000000);
-
-console.log(time);
 
 const weatherData = {};
 
