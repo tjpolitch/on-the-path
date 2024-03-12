@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>The Witcher: Tabletop RPG - Online</title>
+  </head>
+  <body>
+    <div id="game">
+      <div id="stats">
+        <span class="stat"
+          >XP: <strong><span id="xpText">0</span></strong></span
+        >
+        <span class="stat"
+          >Health: <strong><span id="healthText">0</span></strong></span
+        >
+        <span class="stat"
+          >Energy: <strong><span id="energyText">0</span></strong></span
+        >
+      </div>
+      <div id="mainPanel">
+        <div id="info">
+          <span class="info"
+            >Weather:
+            <strong
+              ><span id="temp"></span><span> and </span
+              ><span id="weather">clear</span></strong
+            ></span
+          ><br />
+          <span class="info"
+            >Time: <strong><span id="time"></span></strong
+          ></span>
+          <br />
+          <span class="info"
+            >Light: <strong><span id="light"></span></strong
+          ></span>
+          <br />
+          <span class="info"
+            >Moon: <strong><span id="moon"></span></strong
+          ></span>
+          <br />
+          <span class="info"
+            >Terrain: <strong><span id="terrain"></span></strong
+          ></span>
+        </div>
+        <div id="directions">
+          <div id="upperDirectionButtons">
+            <button class="directionalButtons" id="northWestButton">NW</button>
+            <button class="directionalButtons" id="northButton">N</button>
+            <button class="directionalButtons" id="northEastButton">NE</button>
+          </div>
+          <div id="middleDirectionButtons">
+            <button class="directionalButtons" id="westButton">W</button>
+            <button class="directionalButtons" id="stayButton">O</button>
+            <button class="directionalButtons" id="eastButton">E</button>
+          </div>
+          <div id="lowerDirectionButtons">
+            <button class="directionalButtons" id="southWestButton">SW</button>
+            <button class="directionalButtons" id="southButton">S</button>
+            <button class="directionalButtons" id="southEastButton">SE</button>
+          </div>
+        </div>
+      </div>
+      <div id="controls">
+        <button id="timeButton">Move time forward..</button>
+        <button id="button2">Forage</button>
+        <button id="button3">Eat</button>
+        <button id="inventoryButton">Inventory</button>
+      </div>
+      <div id="monsterStats">
+        <span class="stat"
+          >Monster Name: <strong><span id="monsterName"></span></strong
+        ></span>
+        <span class="stat"
+          >Health: <strong><span id="monsterHealth"></span></strong
+        ></span>
+      </div>
+      <div id="text">
+        Welcome to the Witcher: Tabletop RPG - Online (WTRPGO).
+      </div>
+    </div>
+    <script src="./script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.7.1/jstat.min.js"></script>
+  </body>
+</html>

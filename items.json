@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Edible Berries",
+    "description": "A cluster of ripe, juicy berries suitable for consumption.",
+    "weight": 0.1,
+    "rarity": 80,
+    "value": 5
+  },
+  {
+    "name": "Medicinal Herbs",
+    "description": "A collection of herbs known for their healing properties when brewed into teas or poultices.",
+    "weight": 0.2,
+    "rarity": 60,
+    "value": 15
+  },
+  {
+    "name": "Mushrooms",
+    "description": "Various types of mushrooms, some edible, some poisonous. Requires proper identification.",
+    "weight": 0.2,
+    "rarity": 85,
+    "value": 8
+  },
+  {
+    "name": "Wild Game",
+    "description": "Freshly caught small game such as rabbits or squirrels, suitable for cooking.",
+    "weight": 1,
+    "rarity": 20,
+    "value": 50
+  },
+  {
+    "name": "Fresh Water Source",
+    "description": "A pristine stream or natural spring providing clean drinking water.",
+    "weight": 0,
+    "rarity": 90,
+    "value": 20
+  },
+  {
+    "name": "Edible Roots",
+    "description": "Various roots and tubers that can be dug up and cooked for sustenance.",
+    "weight": 0.3,
+    "rarity": 75,
+    "value": 10
+  },
+  {
+    "name": "Nuts",
+    "description": "Assorted nuts from trees, a good source of protein and energy.",
+    "weight": 0.2,
+    "rarity": 70,
+    "value": 7
+  },
+  {
+    "name": "Wildflowers",
+    "description": "A bouquet of colorful wildflowers, beautiful and potentially useful for herbalism or attracting insects.",
+    "weight": 0.1,
+    "rarity": 95,
+    "value": 3
+  },
+  {
+    "name": "Insect Hive",
+    "description": "A hive of bees or wasps, providing honey or larvae for consumption. Approach with caution.",
+    "weight": 2,
+    "rarity": 40,
+    "value": 30
+  },
+  {
+    "name": "Edible Fungi",
+    "description": "Different varieties of fungi suitable for consumption.",
+    "weight": 0.3,
+    "rarity": 65,
+    "value": 12
+  }
+]
