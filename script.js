@@ -755,6 +755,7 @@ button2.addEventListener("click", function () {
     player.inventory.push(...foundItems);
     displayFoundItems();
   }
+  player.inventory.sort();
   foundItems = [];
   console.log("inventory is: " + player.inventory[0]);
 });
@@ -793,6 +794,9 @@ function calculateTimeSpent() {
 }
 
 inventoryButton.addEventListener("click", function () {
+  player.inventory.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
   let inventoryText = "Your inventory contains: ";
   player.inventory.forEach((item) => {
     inventoryText += ` ${item.name},`;
