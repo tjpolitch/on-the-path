@@ -252,7 +252,7 @@ let foragingDC = 10;
 let inventory = [];
 let foundItems = [];
 let addedTime = 0;
-let energyDrain = 1;
+let staminaDrain = 1;
 let nightDifficulty = 3;
 
 const weatherData = {};
@@ -471,9 +471,13 @@ function forwardTime(minutesIncrimented = 20) {
     time = time - 1440;
     day = day + 1;
     date.setDate(date.getDate() + 1);
-    //energy = energy - 10;
     forwardMoonDay();
   }
+
+  for (let i = minutesIncrimented; i > 0; i -= 10) {
+    spendStamina(player, 1);
+  }
+
   console.log(date);
   console.log(time);
   return time;
@@ -742,7 +746,7 @@ function forage() {
     text.innerText = `You spent an hour foragaing but couldn't find anything.`;
     timeSpent = 60;
   }
-  spendStamina(2);
+  spendStamina(player, 2);
   tellTime(timeSpent);
 }
 
@@ -811,8 +815,8 @@ function tellStats(x) {
   staminaText.innerText = x.stamina;
 }
 
-function spendStamina(x) {
-  x.stamina = x.stamina - (Math.floor(Math.random() * 2) + 1);
+function spendStamina(x, y) {
+  x.stamina = x.stamina - (Math.floor(Math.random() * y) + 1);
 }
 
 function eat() {}
