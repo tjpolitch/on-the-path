@@ -752,11 +752,11 @@ button2.addEventListener("click", function () {
   console.log(JSON.stringify(foundItems));
 
   if (foundItems.length > 0) {
-    inventory.push(...foundItems);
+    player.inventory.push(...foundItems);
     displayFoundItems();
   }
   foundItems = [];
-  console.log("inventory is: " + inventory[0]);
+  console.log("inventory is: " + player.inventory[0]);
 });
 
 // Function to display found items
