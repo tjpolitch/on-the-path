@@ -475,7 +475,7 @@ function forwardTime(minutesIncrimented = 20) {
   }
 
   for (let i = minutesIncrimented; i > 0; i -= 10) {
-    spendStamina(player, 1);
+    spendStamina(player, 0.2);
   }
 
   console.log(date);
@@ -608,7 +608,7 @@ function travel() {
 
   console.log("added time: " + addedTime);
   setTerrain();
-  spendStamina(3);
+  spendStamina(player, 1);
   return addedTime;
 }
 
@@ -746,7 +746,7 @@ function forage() {
     text.innerText = `You spent an hour foragaing but couldn't find anything.`;
     timeSpent = 60;
   }
-  spendStamina(player, 2);
+  spendStamina(player, 1);
   tellTime(timeSpent);
 }
 
