@@ -521,7 +521,7 @@ function tellTime(t) {
 
   tellMoon();
   tellLight(month, dayPart);
-  tellStats();
+  tellStats(player);
   timeText.innerText = timeList[dayPart];
 }
 
@@ -797,7 +797,7 @@ inventoryButton.addEventListener("click", function () {
   player.inventory.forEach((item) => {
     inventoryText += ` ${item.name},`;
   });
-  inventoryText = inventoryText.slice(0, -1); // Remove the last comma
+  inventoryText = inventoryText.slice(0, -1);
   text.innerText = inventoryText;
 });
 
