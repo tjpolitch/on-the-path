@@ -172,7 +172,7 @@ const player = new Character(
   7, // leap
   50, // hp
   100, // stamina
-  60, // encumbrance
+  80, // encumbrance
   10, // recovery
   5, // punch
   6, // kick
@@ -249,11 +249,12 @@ let passed = true;
 let timeSpent = 0;
 let foragingSkill = 5;
 let foragingDC = 10;
-let inventory = [];
+//let inventory = [];
 let foundItems = [];
 let addedTime = 0;
 let staminaDrain = 1;
 let nightDifficulty = 3;
+let inventoryWeight = 0;
 
 const weatherData = {};
 
@@ -265,6 +266,8 @@ const text = document.querySelector("#text");
 const xpText = document.querySelector("#xpText");
 const hpText = document.querySelector("#hpText");
 const staminaText = document.querySelector("#staminaText");
+const encumbranceText = document.querySelector("#encumbranceText");
+const encumbranceStatText = document.querySelector("#encumbranceStatText");
 
 const tempText = document.querySelector("#temp");
 const timeText = document.querySelector("#time");
@@ -748,6 +751,7 @@ function forage() {
   }
   spendStamina(player, 1);
   tellTime(timeSpent);
+  setEncumbrance();
 }
 
 button2.addEventListener("click", function () {
@@ -819,16 +823,32 @@ function spendStamina(x, y) {
   x.stamina = x.stamina - (Math.floor(Math.random() * y) + 1);
 }
 
-
-function eat(x) { // will rejig this later to include a specific item
+function eat(x) {
+  // will rejig this later to include a specific item
   x.shift();
+  setEncumbrance();
   player.stamina += 30;
 }
 
 eatButton.addEventListener("click", function () {
-  
   if (player.inventory.length > 0) {
     eat(player.inventory);
   }
   staminaText.innerText = player.stamina;
 });
+
+function weighInventory() {
+  for (let item of player.inventory) {
+    inventoryWeight += item.weight;
+  }
+}
+
+function setEncumbrance() {
+  weighInventory();
+  encumbranceText.innerText = inventoryWeight;
+  encumbranceStatText.innerText = player.encumbrance;
+
+  if (inventoryWeight > player.encumbrance) {
+    text.innerText = "You are over encumbered.";
+  }
+}
