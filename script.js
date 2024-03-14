@@ -819,4 +819,16 @@ function spendStamina(x, y) {
   x.stamina = x.stamina - (Math.floor(Math.random() * y) + 1);
 }
 
-function eat() {}
+
+function eat(x) { // will rejig this later to include a specific item
+  x.shift();
+  player.stamina += 30;
+}
+
+eatButton.addEventListener("click", function () {
+  
+  if (player.inventory.length > 0) {
+    eat(player.inventory);
+  }
+  staminaText.innerText = player.stamina;
+});
