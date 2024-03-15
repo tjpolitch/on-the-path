@@ -249,7 +249,6 @@ let passed = true;
 let timeSpent = 0;
 let foragingSkill = 5;
 let foragingDC = 10;
-//let inventory = [];
 let foundItems = [];
 let addedTime = 0;
 let staminaDrain = 1;
@@ -259,14 +258,14 @@ let inventoryWeight = 0;
 const weatherData = {};
 
 const timeButton = document.querySelector("#timeButton");
-const button2 = document.querySelector("#button2");
+const forageButton = document.querySelector("#forageButton");
 const eatButton = document.querySelector("#eatButton");
 const inventoryButton = document.querySelector("#inventoryButton");
 const text = document.querySelector("#text");
 const xpText = document.querySelector("#xpText");
 const hpText = document.querySelector("#hpText");
 const staminaText = document.querySelector("#staminaText");
-const encumbranceText = document.querySelector("#encumbranceText");
+const inventoryWeightText = document.querySelector("#inventoryWeightText");
 const encumbranceStatText = document.querySelector("#encumbranceStatText");
 
 const tempText = document.querySelector("#temp");
@@ -745,16 +744,16 @@ function forage() {
     } while (!found);
     timeSpent = Math.floor(Math.random() * 60);
     displayFoundItems();
+    setEncumbrance();
   } else {
     text.innerText = `You spent an hour foragaing but couldn't find anything.`;
     timeSpent = 60;
   }
   spendStamina(player, 1);
   tellTime(timeSpent);
-  setEncumbrance();
 }
 
-button2.addEventListener("click", function () {
+forageButton.addEventListener("click", function () {
   forage();
   console.log("found items: " + foundItems[0]);
   console.log(JSON.stringify(foundItems));
@@ -838,6 +837,7 @@ eatButton.addEventListener("click", function () {
 });
 
 function weighInventory() {
+  inventoryWeight = 0;
   for (let item of player.inventory) {
     inventoryWeight += item.weight;
   }
@@ -845,7 +845,7 @@ function weighInventory() {
 
 function setEncumbrance() {
   weighInventory();
-  encumbranceText.innerText = inventoryWeight;
+  inventoryWeightText.innerText = inventoryWeight;
   encumbranceStatText.innerText = player.encumbrance;
 
   if (inventoryWeight > player.encumbrance) {
