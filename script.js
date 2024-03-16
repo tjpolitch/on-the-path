@@ -480,8 +480,8 @@ function forwardTime(minutesIncrimented = 20) {
     spendStamina(player, 0.2);
   }
 
-  console.log(date);
-  console.log(time);
+  // console.log(date);
+  // console.log(time);
   return time;
 }
 
@@ -513,16 +513,8 @@ function convertTimeToDayPart(t) {
 }
 
 function tellTime(t) {
-  //console.clear();
-
-  console.log("Time at start of time function:" + time);
   forwardTime(t);
-
-  console.log("Time after forwardTime:" + time);
-
   convertTimeToDayPart(time);
-
-  console.log("Time after convertTimetoDayPart:" + time);
   console.log("daypart: " + dayPart);
 
   tellMoon();
@@ -734,7 +726,7 @@ function forage() {
     do {
       items.forEach((item) => {
         const chance = Math.random() * 100; // Generate a random number between 0 and 100
-        console.log("chance: " + chance);
+        //console.log("chance: " + chance);
         if (chance >= item.rarity) {
           foundItems.push(item);
           found = true;
@@ -744,13 +736,13 @@ function forage() {
     } while (!found);
     timeSpent = Math.floor(Math.random() * 60);
     displayFoundItems();
-    setEncumbrance();
   } else {
     text.innerText = `You spent an hour foragaing but couldn't find anything.`;
     timeSpent = 60;
   }
   spendStamina(player, 1);
   tellTime(timeSpent);
+  setEncumbrance();
 }
 
 forageButton.addEventListener("click", function () {
@@ -765,6 +757,7 @@ forageButton.addEventListener("click", function () {
   player.inventory.sort();
   foundItems = [];
   console.log("inventory is: " + player.inventory[0]);
+  setEncumbrance();
 });
 
 // Function to display found items
@@ -838,14 +831,19 @@ eatButton.addEventListener("click", function () {
 
 function weighInventory() {
   inventoryWeight = 0;
-  for (let item of player.inventory) {
-    inventoryWeight += item.weight;
+  // for (let item of player.inventory) {
+  //   inventoryWeight += item.weight;
+  // }
+
+  for (let i = 0; i < player.inventory.length; i++) {
+    inventoryWeight += player.inventory[i].weight;
   }
+  inventoryWeightText.innerText = inventoryWeight;
+  //console.log("Inventory weight for weighInventory() is: " + inventoryWeight);
 }
 
 function setEncumbrance() {
   weighInventory();
-  inventoryWeightText.innerText = inventoryWeight;
   encumbranceStatText.innerText = player.encumbrance;
 
   if (inventoryWeight > player.encumbrance) {
