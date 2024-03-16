@@ -838,7 +838,7 @@ function weighInventory() {
   for (let i = 0; i < player.inventory.length; i++) {
     inventoryWeight += player.inventory[i].weight;
   }
-  inventoryWeightText.innerText = inventoryWeight;
+  inventoryWeightText.innerText = inventoryWeight.toFixed(1);
   //console.log("Inventory weight for weighInventory() is: " + inventoryWeight);
 }
 
