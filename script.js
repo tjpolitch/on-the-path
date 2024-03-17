@@ -397,6 +397,9 @@ const restButton = document.querySelector("#restButton");
 const forageButton = document.querySelector("#forageButton");
 const eatButton = document.querySelector("#eatButton");
 const inventoryButton = document.querySelector("#inventoryButton");
+const fightButton = document.querySelector("#fightButton");
+const negotiateButton = document.querySelector("#negotiateButton");
+const fleeButton = document.querySelector("#fleeButton");
 const text = document.querySelector("#text");
 const xpText = document.querySelector("#xpText");
 const hpText = document.querySelector("#hpText");
@@ -560,6 +563,8 @@ const moonList = [
 const terrainTypes = ["forest", "plains", "hills", "mountains", "swamp"];
 
 const terrainProbabilities = [0.3, 0.3, 0.2, 0.1, 0.1];
+
+setUIInTravel();
 
 //copied from chatgpt
 function getRandomTerrain() {
@@ -755,6 +760,7 @@ function travel() {
   console.log("added time: " + addedTime);
   setTerrain();
   spendStamina(player, 1);
+
   return addedTime;
 }
 
@@ -1002,4 +1008,75 @@ function setEncumbrance() {
   if (inventoryWeight > player.encumbrance) {
     text.innerText = "You are over encumbered.";
   }
+}
+
+function createEncounter() {
+  const bandit = new Enemy(
+    "High",
+    50, // bounty
+    "Leather armor", // armor
+    5, // intellect
+    7, // reflexes
+    6, // body
+    7, // speed
+    4, // empathy
+    4, // crafting
+    6, // will
+    5, // luck
+    7, // stun
+    8, // run
+    6, // leap
+    80, // stamina
+    50, // encumbrance
+    10, // recovery
+    80, // hp
+    70, // vigor
+    "Average", // height
+    "Average", // weight
+    "Forest", // environment
+    "Gangs of thieves", // organization
+    ["Fire", "Poison"], // vulnerabilities
+    ["Stealth", "Ambush"], // abilities
+    7, // athletics
+    6, // awareness
+    8, // brawling
+    7, // courage
+    5, // crossbow
+    7, // dodgeEscape
+    6, // endurance
+    6, // resistCoercion
+    5, // resistMagic
+    7, // smallBlades
+    6, // swordsmanship
+    7, // wildernessSurvival
+    ["Dagger", "Bandages", "Lockpicks"] // inventory
+  );
+
+  setUIInEncounter();
+  return bandit;
+}
+
+function rollEncounter() {
+  rollD10();
+  if (roll == 1) {
+    createEncounter();
+  }
+}
+
+function setUIInEncounter() {
+  text.innerText =
+    "As you wander through the forest, you encounter a bandit blocking your path.";
+
+  restButton.style.display = "none";
+  forageButton.style.display = "none";
+  eatButton.style.display = "none";
+}
+
+function setUIInTravel() {
+  restButton.style.display = "inline";
+  forageButton.style.display = "inline";
+  eatButton.style.display = "inline";
+  fightButton.style.display = "none";
+  negotiateButton.style.display = "none";
+  fleeButton.style.display = "none";
 }
