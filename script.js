@@ -74,7 +74,9 @@ class Character {
     xp,
     aSkills,
     bSkills,
-    cSkills
+    cSkills,
+    rested,
+    hungry
   ) {
     this.player = player;
     this.name = name;
@@ -151,6 +153,8 @@ class Character {
     this.aSkills = aSkills;
     this.bSkills = bSkills;
     this.cSkills = cSkills;
+    this.rested = rested;
+    this.hungry = hungry;
   }
 }
 
@@ -229,7 +233,9 @@ const player = new Character(
   0, //xp
   [], // aSkills
   [], // bSkills
-  [] // cSkills
+  [], // cSkills
+  true,
+  false
 );
 
 let date = new Date("1247-05-01T00:00:00");
@@ -254,8 +260,9 @@ let addedTime = 0;
 let staminaDrain = 1;
 let nightDifficulty = 3;
 let inventoryWeight = 0;
+let timeSinceEating = 0;
 
-const weatherData = {};
+const conditions = [];
 
 const restButton = document.querySelector("#restButton");
 const forageButton = document.querySelector("#forageButton");
@@ -467,17 +474,30 @@ const mapHeight = testMap.length;
 
 //--------------------------------------------------------------------------------------------
 
-function forwardTime(minutesIncrimented = 20) {
+function forwardTime(minutesIncrimented = 60) {
   time = time + minutesIncrimented;
+  timeSinceEating += minutesIncrimented;
   if (time > 1440) {
     time = time - 1440;
     day = day + 1;
     date.setDate(date.getDate() + 1);
     forwardMoonDay();
+    player.rested = false;
+    console.log("rested: " + player.rested);
   }
 
   for (let i = minutesIncrimented; i > 0; i -= 10) {
     spendStamina(player, 0.2);
+  }
+
+  if (timeSinceEating > 720) {
+    player.hungry = true;
+  }
+
+  if (player.hungry == true && player.stamina <= 0) {
+    for (let i = minutesIncrimented; i > 0; i -= 60) {
+      player.hp -= 5;
+    }
   }
 
   // console.log(date);
@@ -516,7 +536,7 @@ function tellTime(t) {
   forwardTime(t);
   convertTimeToDayPart(time);
   console.log("daypart: " + dayPart);
-
+  tellTemp();
   tellMoon();
   tellLight(month, dayPart);
   tellStats(player);
@@ -560,7 +580,10 @@ function tellLight(month, dayPart) {
 
 restButton.addEventListener("click", function () {
   tellTime(240);
-  tellTemp();
+  player.stamina += 40;
+  staminaText.innerText = player.stamina;
+  player.rested = true;
+  console.log("rested: " + player.rested);
 });
 
 function tellTemp() {
@@ -822,7 +845,10 @@ function eat(x) {
   x.shift();
   setEncumbrance();
   player.stamina += 30;
+  player.hungry = false;
   text.innerText = `You eat ${eatenItem} and start to feel better.`;
+  forwardTime(9);
+  timeSinceEating = 0;
 }
 
 eatButton.addEventListener("click", function () {
