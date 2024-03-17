@@ -817,9 +817,12 @@ function spendStamina(x, y) {
 
 function eat(x) {
   // will rejig this later to include a specific item
+  let eatenItem = player.inventory[0].name;
+  console.log(player.inventory[0]);
   x.shift();
   setEncumbrance();
   player.stamina += 30;
+  text.innerText = `You eat ${eatenItem} and start to feel better.`;
 }
 
 eatButton.addEventListener("click", function () {
@@ -831,15 +834,10 @@ eatButton.addEventListener("click", function () {
 
 function weighInventory() {
   inventoryWeight = 0;
-  // for (let item of player.inventory) {
-  //   inventoryWeight += item.weight;
-  // }
-
   for (let i = 0; i < player.inventory.length; i++) {
     inventoryWeight += player.inventory[i].weight;
   }
   inventoryWeightText.innerText = inventoryWeight.toFixed(1);
-  //console.log("Inventory weight for weighInventory() is: " + inventoryWeight);
 }
 
 function setEncumbrance() {
