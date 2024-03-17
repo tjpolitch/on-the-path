@@ -158,6 +158,135 @@ class Character {
   }
 }
 
+class Enemy {
+  constructor(
+    threat,
+    bounty,
+    armor,
+    intellect,
+    reflexes,
+    dexterity,
+    body,
+    speed,
+    empathy,
+    crafting,
+    will,
+    luck,
+    stun,
+    run,
+    leap,
+    stamina,
+    encumbrance,
+    recovery,
+    hp,
+    vigor,
+    height,
+    weight,
+    environment,
+    organization,
+    vulnerabilities,
+    abilities,
+    athletics,
+    awareness,
+    brawling,
+    courage,
+    crossbow,
+    dodgeEscape,
+    endurance,
+    resistCoercion,
+    resistMagic,
+    smallBlades,
+    stealth,
+    swordsmanship,
+    wildernessSurvival,
+    inventory
+  ) {
+    this.threat = threat;
+    this.bounty = bounty;
+    this.armor = armor;
+    this.intellect = intellect;
+    this.reflexes = reflexes;
+    this.dexterity = dexterity;
+    this.body = body;
+    this.speed = speed;
+    this.empathy = empathy;
+    this.crafting = crafting;
+    this.will = will;
+    this.luck = luck;
+    this.stun = stun;
+    this.run = run;
+    this.leap = leap;
+    this.stamina = stamina;
+    this.encumbrance = encumbrance;
+    this.recovery = recovery;
+    this.hp = hp;
+    this.vigor = vigor;
+    this.height = height;
+    this.weight = weight;
+    this.environment = environment;
+    this.organization = organization;
+    this.vulnerabilities = vulnerabilities;
+    this.abilities = abilities;
+    this.athletics = athletics;
+    this.awareness = awareness;
+    this.brawling = brawling;
+    this.courage = courage;
+    this.crossbow = crossbow;
+    this.dodgeEscape = dodgeEscape;
+    this.endurance = endurance;
+    this.resistCoercion = resistCoercion;
+    this.resistMagic = resistMagic;
+    this.smallBlades = smallBlades;
+    this.stealth = stealth;
+    this.swordsmanship = swordsmanship;
+    this.wildernessSurvival = wildernessSurvival;
+    this.inventory = inventory;
+  }
+}
+
+const bandit = new Enemy(
+  ["easy", "simple"],
+  10, // bounty
+  5, // armor
+  3, // intellect
+  6, // reflexes
+  5, //dexterity
+  5, // body
+  4, // speed
+  3, // empathy
+  4, // crafting
+  4, // will
+  0, // luck
+  4, // stun
+  12, // run
+  2, // leap
+  20, // stamina
+  50, // encumbrance
+  4, // recovery
+  20, // hp
+  0, // vigor
+  "average", // height
+  "average", // weight
+  ["near roads", "near settlements"], // environment
+  [3, 15], // organization
+  ["Hanged Man's Venom"], // vulnerabilities
+  [], // abilities
+  4, // athletics
+  6, // awareness
+  6, // brawling
+  7, // courage
+  4, // crossbow
+  4, // dodgeEscape
+  5, // endurance
+  5, // resistCoercion
+  4, // resistMagic
+  5, // smallBlades
+  3, //stealth
+  6, // swordsmanship
+  5, // wildernessSurvival
+  ["Dagger", "Bandages", "Lockpicks"] // inventory
+);
+
 const player = new Character(
   true,
   "Hendrik",
