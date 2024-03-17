@@ -257,7 +257,7 @@ let inventoryWeight = 0;
 
 const weatherData = {};
 
-const timeButton = document.querySelector("#timeButton");
+const restButton = document.querySelector("#restButton");
 const forageButton = document.querySelector("#forageButton");
 const eatButton = document.querySelector("#eatButton");
 const inventoryButton = document.querySelector("#inventoryButton");
@@ -558,8 +558,8 @@ function tellLight(month, dayPart) {
   lightText.innerText = lightList[lightLevel];
 }
 
-timeButton.addEventListener("click", function () {
-  tellTime();
+restButton.addEventListener("click", function () {
+  tellTime(240);
   tellTemp();
 });
 
