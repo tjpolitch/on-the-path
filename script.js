@@ -390,6 +390,7 @@ let staminaDrain = 1;
 let nightDifficulty = 3;
 let inventoryWeight = 0;
 let timeSinceEating = 0;
+let participants = [];
 
 const conditions = [];
 
@@ -760,7 +761,7 @@ function travel() {
   console.log("added time: " + addedTime);
   setTerrain();
   spendStamina(player, 1);
-
+  rollEncounter();
   return addedTime;
 }
 
@@ -788,6 +789,7 @@ southButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the south.`;
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -1012,47 +1014,49 @@ function setEncumbrance() {
 
 function createEncounter() {
   const bandit = new Enemy(
-    "High",
-    50, // bounty
-    "Leather armor", // armor
-    5, // intellect
-    7, // reflexes
-    6, // body
-    7, // speed
-    4, // empathy
+    ["easy", "simple"],
+    10, // bounty
+    5, // armor
+    3, // intellect
+    6, // reflexes
+    5, //dexterity
+    5, // body
+    4, // speed
+    3, // empathy
     4, // crafting
-    6, // will
-    5, // luck
-    7, // stun
-    8, // run
-    6, // leap
-    80, // stamina
+    4, // will
+    0, // luck
+    4, // stun
+    12, // run
+    2, // leap
+    20, // stamina
     50, // encumbrance
-    10, // recovery
-    80, // hp
-    70, // vigor
-    "Average", // height
-    "Average", // weight
-    "Forest", // environment
-    "Gangs of thieves", // organization
-    ["Fire", "Poison"], // vulnerabilities
-    ["Stealth", "Ambush"], // abilities
-    7, // athletics
+    4, // recovery
+    20, // hp
+    0, // vigor
+    "average", // height
+    "average", // weight
+    ["near roads", "near settlements"], // environment
+    [3, 15], // organization
+    ["Hanged Man's Venom"], // vulnerabilities
+    [], // abilities
+    4, // athletics
     6, // awareness
-    8, // brawling
+    6, // brawling
     7, // courage
-    5, // crossbow
-    7, // dodgeEscape
-    6, // endurance
-    6, // resistCoercion
-    5, // resistMagic
-    7, // smallBlades
+    4, // crossbow
+    4, // dodgeEscape
+    5, // endurance
+    5, // resistCoercion
+    4, // resistMagic
+    5, // smallBlades
+    3, //stealth
     6, // swordsmanship
-    7, // wildernessSurvival
+    5, // wildernessSurvival
     ["Dagger", "Bandages", "Lockpicks"] // inventory
   );
-
   setUIInEncounter();
+
   return bandit;
 }
 
@@ -1066,7 +1070,9 @@ function rollEncounter() {
 function setUIInEncounter() {
   text.innerText =
     "As you wander through the forest, you encounter a bandit blocking your path.";
-
+  fightButton.style.display = "inline";
+  negotiateButton.style.display = "inline";
+  fleeButton.style.display = "inline";
   restButton.style.display = "none";
   forageButton.style.display = "none";
   eatButton.style.display = "none";
@@ -1079,4 +1085,35 @@ function setUIInTravel() {
   fightButton.style.display = "none";
   negotiateButton.style.display = "none";
   fleeButton.style.display = "none";
+}
+
+function setUIInCombat() {
+  //need to write this
+}
+
+fightButton.addEventListener("click", function () {
+  startCombat();
+});
+
+fleeButton.addEventListener("click", function () {});
+
+negotiateButton.addEventListener("click", function () {});
+
+function startCombat() {
+  setUIInCombat();
+  let playerInitiative = rollD10() + player.reflexes;
+  let enemyInitiative = rollD10() + bandit.reflexes;
+
+  while (enemyInitiative == playerInitiative) {
+    playerInitiative = rollD10() + player.reflexes;
+    enemyInitiative = rollD10() + bandit.reflexes;
+  }
+
+  if (enemyInitiative > playerInitiative) {
+    participants = [bandit, player];
+  } else if (playerInitiative > enemyInitiative) {
+    participants = [player, bandit];
+  }
+
+  console.log(participants);
 }
