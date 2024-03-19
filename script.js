@@ -244,7 +244,7 @@ class Enemy {
   }
 }
 
-const bandit = new Enemy(
+let bandit = new Enemy(
   ["easy", "simple"],
   10, // bounty
   5, // armor
@@ -394,6 +394,7 @@ let participants = [];
 
 const conditions = [];
 
+const attackButton = document.querySelector("#attackButton");
 const restButton = document.querySelector("#restButton");
 const forageButton = document.querySelector("#forageButton");
 const eatButton = document.querySelector("#eatButton");
@@ -878,7 +879,7 @@ function terrainBounds() {
 // Function to simulate foraging in the immediate area - a fail means that an hour goes forward and a success means that one item is found and the time goes forward less than an hour
 function forage() {
   let found = false;
-  skillCheck(foragingSkill, foragingDC);
+  skillCheckDC(foragingSkill, foragingDC);
 
   // todo: include a loop so that if no item is found below chance, the loop repeats
 
@@ -931,7 +932,7 @@ function displayFoundItems() {
 }
 
 // later on I can add parameters for player/character/monster + skill e.g. skillCheck(player, foraging)
-function skillCheck(skill, dc) {
+function skillCheckDC(skill, dc) {
   rollD10();
   let result = skill + roll;
   if (result >= dc) {
@@ -941,6 +942,26 @@ function skillCheck(skill, dc) {
   }
   console.log(passed);
   return passed;
+}
+
+function skillCheckOpposed(playerSkill, playerStat, enemySkill, enemyStat) {
+  rollD10();
+  let playerResult = playerSkill + playerStat + roll;
+  rollD10();
+  let enemyResult = enemySkill + enemyStat + roll;
+
+  while (playerResult == enemyResult) {
+    rollD10();
+    playerResult = playerSkill + playerStat + roll;
+    rollD10();
+    enemyResult = enemySkill + enemyStat + roll;
+  }
+
+  if (playerResult > enemyResult) {
+    passed = true;
+  } else {
+    passed = false;
+  }
 }
 
 function rollD10() {
@@ -1013,51 +1034,9 @@ function setEncumbrance() {
 }
 
 function createEncounter() {
-  const bandit = new Enemy(
-    ["easy", "simple"],
-    10, // bounty
-    5, // armor
-    3, // intellect
-    6, // reflexes
-    5, //dexterity
-    5, // body
-    4, // speed
-    3, // empathy
-    4, // crafting
-    4, // will
-    0, // luck
-    4, // stun
-    12, // run
-    2, // leap
-    20, // stamina
-    50, // encumbrance
-    4, // recovery
-    20, // hp
-    0, // vigor
-    "average", // height
-    "average", // weight
-    ["near roads", "near settlements"], // environment
-    [3, 15], // organization
-    ["Hanged Man's Venom"], // vulnerabilities
-    [], // abilities
-    4, // athletics
-    6, // awareness
-    6, // brawling
-    7, // courage
-    4, // crossbow
-    4, // dodgeEscape
-    5, // endurance
-    5, // resistCoercion
-    4, // resistMagic
-    5, // smallBlades
-    3, //stealth
-    6, // swordsmanship
-    5, // wildernessSurvival
-    ["Dagger", "Bandages", "Lockpicks"] // inventory
-  );
-  setUIInEncounter();
+  //need to include  generation of an enemy here
 
-  return bandit;
+  setUIInEncounter();
 }
 
 function rollEncounter() {
@@ -1076,6 +1055,7 @@ function setUIInEncounter() {
   restButton.style.display = "none";
   forageButton.style.display = "none";
   eatButton.style.display = "none";
+  attackButton.style.display = "none";
 }
 
 function setUIInTravel() {
@@ -1085,17 +1065,32 @@ function setUIInTravel() {
   fightButton.style.display = "none";
   negotiateButton.style.display = "none";
   fleeButton.style.display = "none";
+  attackButton.style.display = "none";
 }
 
 function setUIInCombat() {
-  //need to write this
+  attackButton.style.display = "inline";
+  fightButton.style.display = "none";
 }
 
 fightButton.addEventListener("click", function () {
   startCombat();
 });
 
-fleeButton.addEventListener("click", function () {});
+fleeButton.addEventListener("click", function () {
+  skillCheckOpposed(
+    player.dodgeEscape,
+    player.reflexes,
+    bandit.dodgeEscape,
+    bandit.reflexes
+  );
+  if (passed == true) {
+    text.innerText = "You flee the fight and run into the forest.";
+    setUIInTravel();
+  } else {
+    text.innerText = "You try to flee but the enemy catches up to you.";
+  }
+});
 
 negotiateButton.addEventListener("click", function () {});
 
@@ -1117,3 +1112,10 @@ function startCombat() {
 
   console.log(participants);
 }
+
+function enemyTurn() {
+  let target = player; //a function to choose a member of a players party can be added later
+  let action = selectEnemyAction;
+}
+
+function selectEnemyAction() {}
