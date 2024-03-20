@@ -1132,8 +1132,11 @@ function startCombat() {
 
   if (player.hp <= 0) {
     text.innerText += `\n You have been defeated by the bandit! Game over.`;
+    //todo: create a function for a new game
   } else if (bandit.hp <= 0) {
     text.innerText += `\n You have defeated the bandit.`;
+    resetBandit();
+    setUIInTravel();
   }
 }
 
