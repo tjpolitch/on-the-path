@@ -68,6 +68,7 @@ class Character {
     ritualCrafting,
     languages,
     inventory,
+    armor,
     crowns,
     reputation,
     characterClass,
@@ -146,6 +147,7 @@ class Character {
     this.ritualCrafting = ritualCrafting;
     this.languages = languages;
     this.inventory = inventory;
+    this.armor = armor;
     this.crowns = crowns;
     this.reputation = reputation;
     this.characterClass = characterClass;
@@ -160,6 +162,7 @@ class Character {
 
 class Enemy {
   constructor(
+    name,
     threat,
     bounty,
     armor,
@@ -201,6 +204,7 @@ class Enemy {
     wildernessSurvival,
     inventory
   ) {
+    this.name = name;
     this.threat = threat;
     this.bounty = bounty;
     this.armor = armor;
@@ -245,6 +249,7 @@ class Enemy {
 }
 
 let bandit = new Enemy(
+  "Bandit",
   ["easy", "simple"],
   10, // bounty
   5, // armor
@@ -356,6 +361,7 @@ const player = new Character(
   6, // ritualCrafting
   ["common", "elder", "dwarven"], // languages
   [], // inventory (empty for now)
+  10, //armor
   100, // crowns
   50, // reputation
   "witcher", // characterClass
@@ -970,6 +976,12 @@ function rollD10() {
   return roll;
 }
 
+function rollD6() {
+  roll = Math.floor(Math.random() * 6) + 1;
+  console.log(roll);
+  return roll;
+}
+
 function calculateTimeSpent() {
   timeSpent = Math.floor(Math.random() * 60) + 1;
 }
@@ -1047,8 +1059,8 @@ function rollEncounter() {
 }
 
 function setUIInEncounter() {
-  text.innerText =
-    "As you wander through the forest, you encounter a bandit blocking your path.";
+  text.innerText +=
+    "\nAs you wander through the forest, you encounter a bandit blocking your path.";
   fightButton.style.display = "inline";
   negotiateButton.style.display = "inline";
   fleeButton.style.display = "inline";
@@ -1071,6 +1083,7 @@ function setUIInTravel() {
 function setUIInCombat() {
   attackButton.style.display = "inline";
   fightButton.style.display = "none";
+  text.innerText = "You stand your ground and prepare to fight.";
 }
 
 fightButton.addEventListener("click", function () {
@@ -1111,6 +1124,17 @@ function startCombat() {
   }
 
   console.log(participants);
+
+  while (player.hp > 0 && bandit.hp > 0) {
+    meleeAttack(participants[0], participants[1]);
+    participants = participants.reverse();
+  }
+
+  if (player.hp <= 0) {
+    text.innerText += `\n You have been defeated by the bandit! Game over.`;
+  } else if (bandit.hp <= 0) {
+    text.innerText += `\n You have defeated the bandit.`;
+  }
 }
 
 function enemyTurn() {
@@ -1119,3 +1143,32 @@ function enemyTurn() {
 }
 
 function selectEnemyAction() {}
+
+function meleeAttack(attacker, defender) {
+  rollD10();
+  let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
+  console.log(`Attacker rolls ${attackResult}`);
+  rollD10();
+  let defendResult = defender.dodgeEscape + defender.reflexes + roll; //defenders are automatically dodging for now
+  console.log(`Defender rolls ${defendResult}`);
+
+  if (attackResult > defendResult) {
+    let bodyDamage = 0;
+    let damage = rollD6() + rollD6() + 2 - defender.armor;
+    damage = Math.max(0, damage);
+    if (attacker.body > defender.body) {
+      bodyDamage = attacker.body - defender.body;
+      damage = damage + bodyDamage;
+    }
+    defender.armor -= 1;
+    defender.hp -= damage;
+    text.innerText += `\n${attacker.name} attacks ${defender.name} for ${damage} damage!`;
+  } else {
+    text.innerText += `\n${attacker.name} attacks ${defender.name} but misses!`;
+  }
+  hpText.innerText = player.hp;
+}
+
+function resetBandit() {
+  bandit.hp = 20;
+}
