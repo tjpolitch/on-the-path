@@ -373,6 +373,19 @@ const player = new Character(
   false
 );
 
+const restMessages = [
+  "You rest for a few hours and regain some stamina.",
+  "You take a moment to catch your breath and feel reinvigorated.",
+  "As you rest, you feel your energy returning.",
+  "Taking a break, you feel a renewed sense of vitality.",
+  "Resting proves beneficial as you recover some stamina.",
+  "A brief respite leaves you feeling refreshed and ready to continue.",
+  "You relax for a while, allowing your stamina to replenish.",
+  "Resting helps you shake off some of your fatigue.",
+  "You take it easy for a bit and notice your stamina improving.",
+  "Pausing to rest, you feel a surge of energy returning.",
+];
+
 let date = new Date("1247-05-01T00:00:00");
 let month = date.getMonth();
 let day = date.getDate();
@@ -725,7 +738,11 @@ restButton.addEventListener("click", function () {
   player.stamina += 40;
   staminaText.innerText = player.stamina;
   player.rested = true;
-  console.log("rested: " + player.rested);
+
+  const randomIndex = Math.floor(Math.random() * restMessages.length);
+  const message = restMessages[randomIndex];
+
+  text.innerText = message;
 });
 
 function tellTemp() {
@@ -784,6 +801,8 @@ northButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the north.`;
+    landscapeMessage();
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -796,6 +815,7 @@ southButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the south.`;
+    landscapeMessage();
     rollEncounter();
   } else {
     terrainBounds();
@@ -809,6 +829,8 @@ eastButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the east.`;
+    landscapeMessage();
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -821,6 +843,8 @@ westButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the west.`;
+    landscapeMessage();
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -834,6 +858,8 @@ southWestButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the south-west.`;
+    landscapeMessage();
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -847,6 +873,8 @@ southEastButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the south-east.`;
+    landscapeMessage();
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -860,6 +888,8 @@ northWestButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the north-west.`;
+    landscapeMessage();
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -873,6 +903,7 @@ northEastButton.addEventListener("click", function () {
     tellTime(addedTime);
     tellTemp();
     text.innerText = `You travel to the north-east.`;
+    rollEncounter();
   } else {
     terrainBounds();
   }
@@ -1174,4 +1205,66 @@ function meleeAttack(attacker, defender) {
 
 function resetBandit() {
   bandit.hp = 20;
+}
+
+function landscapeMessage() {
+  const landscapeMessages = [
+    "\nYou walk through a dense forest, the ancient trees towering above you like silent sentinels.",
+    "\nThe winding path leads you through a rugged mountain pass, the jagged peaks obscured by swirling mists.",
+    "\nA vast plain stretches out before you, the tall grass rustling in the breeze as you make your way across the open expanse.",
+    "\nYou follow a meandering river through a tranquil valley, the sound of rushing water soothing your weary soul.",
+    "\nThe road takes you through a desolate moorland, the bleak landscape stretching out in all directions under the grey sky.",
+    "\nA winding trail leads you through a mystical grove, where ethereal wisps dance among the ancient trees.",
+    "\nYou traverse a rocky coastline, the crashing waves sending salty spray into the air as you navigate the treacherous cliffs.",
+    "\nThe path winds through a sun-dappled forest, the chirping of birds and buzzing of insects filling the air with life.",
+    "\nYou stumble upon the ruins of an ancient fortress, its crumbling walls standing as a testament to the passage of time.",
+    "\nA sprawling meadow unfolds before you, dotted with vibrant wildflowers and buzzing with the hum of bees.",
+    "\nYou come across a hidden waterfall, its cascading waters shimmering in the sunlight as they tumble into a crystal-clear pool below.",
+    "\nA mysterious fog rolls in from the marshes, cloaking the landscape in an eerie silence as you tread cautiously through the mist.",
+    "\nYou journey through a serene woodland, the trees whispering ancient secrets as you pass by.",
+    "\nA towering mountain looms in the distance, its snow-capped peak disappearing into the clouds above.",
+    "\nYou stumble upon a forgotten graveyard, its weather-worn headstones standing as solemn markers of lives long past.",
+    "\nThe path leads you through a bustling marketplace, the scent of spices and the sounds of haggling merchants filling the air with energy.",
+    "\nYou come across a quaint village nestled in the hills, its thatched-roof cottages exuding a rustic charm.",
+    "\nA shimmering oasis appears on the horizon, its sparkling waters a welcome respite from the harsh desert sands.",
+    "\nYou journey through a dense swamp, the murky waters teeming with hidden dangers lurking just below the surface.",
+    "\nA majestic castle looms on the horizon, its towering spires reaching towards the heavens as you approach the imposing fortress.",
+    "\nYou stumble upon a hidden cave entrance, its dark depths beckoning you to explore the mysteries that lie within.",
+    "\nThe path leads you through a tranquil glade, where shafts of sunlight filter through the canopy above, casting dappled shadows on the forest floor.",
+    "\nYou come across a sprawling vineyard, its neatly-tended rows of grapevines stretching as far as the eye can see.",
+    "\nA mysterious stone circle stands before you, its weathered stones bearing ancient runes that hint at forgotten rituals and arcane powers.",
+    "\nYou journey through a windswept plain, the tall grass bending in the breeze as you make your way across the open expanse.",
+    "\nA towering waterfall cascades down the side of a sheer cliff, its thundering roar echoing through the canyon below.",
+    "\nYou stumble upon a hidden glen, its lush greenery providing a welcome respite from the harsh wilderness beyond.",
+    "\nThe path leads you through a dense thicket, where tangled underbrush and twisted vines make progress slow and arduous.",
+    "\nYou come across a sunken shipwreck, its rotting timbers a haunting reminder of the dangers that lurk beneath the waves.",
+    "\nA crumbling stone bridge spans a chasm before you, its ancient arches standing as a testament to the engineering prowess of long-forgotten civilizations.",
+    "\nYou journey through a windswept desert, the shifting sands forming intricate patterns beneath your feet as you trek across the barren landscape.",
+    "\nA towering statue looms on the horizon, its weathered features carved with a sense of solemn majesty that speaks to the passage of ages.",
+    "\nYou stumble upon a hidden glade, its tranquil beauty belying the dangers that lurk in the shadows of the surrounding forest.",
+    "\nThe path leads you through a mist-shrouded marsh, where twisted trees and tangled roots form a labyrinthine maze that seems to shift and change with every step.",
+    "\nYou come across a crumbling castle ruin, its ivy-covered walls standing as a silent testament to the once-great kingdom that now lies in ruin.",
+    "\nA mysterious standing stone marks the center of a forgotten clearing, its weathered surface adorned with intricate carvings that hint at a lost civilization.",
+    "\nYou journey through a moonlit forest, where the whispering of the wind through the trees and the hooting of owls create an atmosphere of eerie tranquility.",
+    "\nA towering mountain range stretches out before you, its snow-capped peaks disappearing into the clouds as you contemplate the journey ahead.",
+    "\nYou stumble upon a hidden cave entrance, its yawning maw beckoning you to explore the dark depths that lie beyond.",
+    "\nThe path leads you through a dense jungle, where towering trees and lush foliage form a verdant canopy overhead.",
+    "\nYou come across a secluded waterfall, its crystal-clear waters cascading down from a moss-covered cliff into a tranquil pool below.",
+    "\nA mysterious stone circle stands before you, its weathered stones bearing ancient runes that hint at forgotten rituals and arcane powers.",
+    "\nYou journey through a windswept plain, the tall grass bending in the breeze as you make your way across the open expanse.",
+    "\nA towering waterfall cascades down the side of a sheer cliff, its thundering roar echoing through the canyon below.",
+    "\nYou stumble upon a hidden glen, its lush greenery providing a welcome respite from the harsh wilderness beyond.",
+    "\nThe path leads you through a dense thicket, where tangled underbrush and twisted vines make progress slow and arduous.",
+    "\nYou come across a sunken shipwreck, its rotting timbers a haunting reminder of the dangers that lurk beneath the waves.",
+    "\nA crumbling stone bridge spans a chasm before you, its ancient arches standing as a testament to the engineering prowess of long-forgotten civilizations.",
+    "\nYou journey through a windswept desert, the shifting sands forming intricate patterns beneath your feet as you trek across the barren landscape.",
+    "\nA towering statue looms on the horizon, its weathered features carved with a sense of solemn majesty that speaks to the passage of ages.",
+    "\nYou stumble upon a hidden glade, its tranquil beauty belying the dangers that lurk in the shadows of the surrounding forest.",
+    "\nThe path leads you through a mist-shrouded marsh, where twisted trees and tangled roots form a labyrinthine maze that seems to shift and change with every step.",
+    "\nYou come across a crumbling castle ruin, its ivy-covered walls standing as a silent testament to the once-great kingdom that now lies in ruin.",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * landscapeMessages.length);
+  const message = landscapeMessages[randomIndex];
+  text.innerText += message;
 }
