@@ -445,6 +445,7 @@ const southEastButton = document.querySelector("#southEastButton");
 const southWestButton = document.querySelector("#southWestButton");
 const northEastButton = document.querySelector("#northEastButton");
 const northWestButton = document.querySelector("#northWestButton");
+const stayButton = document.querySelector("#stayButton");
 
 const items = [
   {
@@ -1102,6 +1103,16 @@ function setUIInEncounter() {
   forageButton.style.display = "none";
   eatButton.style.display = "none";
   attackButton.style.display = "none";
+
+  northButton.style.display = "none";
+  southButton.style.display = "none";
+  eastButton.style.display = "none";
+  westButton.style.display = "none";
+  southEastButton.style.display = "none";
+  southWestButton.style.display = "none";
+  northEastButton.style.display = "none";
+  northWestButton.style.display = "none";
+  stayButton.style.display = "none";
 }
 
 function setUIInTravel() {
@@ -1112,6 +1123,16 @@ function setUIInTravel() {
   negotiateButton.style.display = "none";
   fleeButton.style.display = "none";
   attackButton.style.display = "none";
+
+  northButton.style.display = "inline";
+  southButton.style.display = "inline";
+  eastButton.style.display = "inline";
+  westButton.style.display = "inline";
+  southEastButton.style.display = "inline";
+  southWestButton.style.display = "inline";
+  northEastButton.style.display = "inline";
+  northWestButton.style.display = "inline";
+  stayButton.style.display = "inline";
 }
 
 function setUIInCombat() {
