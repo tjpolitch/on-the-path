@@ -202,7 +202,8 @@ class Enemy {
     stealth,
     swordsmanship,
     wildernessSurvival,
-    inventory
+    inventory,
+    crowns
   ) {
     this.name = name;
     this.threat = threat;
@@ -245,6 +246,7 @@ class Enemy {
     this.swordsmanship = swordsmanship;
     this.wildernessSurvival = wildernessSurvival;
     this.inventory = inventory;
+    this.crowns = crowns;
   }
 }
 
@@ -289,7 +291,8 @@ let bandit = new Enemy(
   3, //stealth
   6, // swordsmanship
   5, // wildernessSurvival
-  ["Dagger", "Bandages", "Lockpicks"] // inventory
+  ["Dagger", "Bandages", "Lockpicks"], // inventory
+  10 //crowns
 );
 
 const player = new Character(
@@ -1166,6 +1169,7 @@ function startCombat() {
     //todo: create a function for a new game
   } else if (bandit.hp <= 0) {
     text.innerText += `\n You have defeated the bandit.`;
+    player.crowns += bandit.crowns;
     resetBandit();
     setUIInTravel();
   }
