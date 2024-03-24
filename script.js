@@ -1165,7 +1165,7 @@ function setUIInCombat() {
 }
 
 fightButton.addEventListener("click", function () {
-  startCombat();
+  startCombat(bandit);
 });
 
 fleeButton.addEventListener("click", function () {
@@ -1185,43 +1185,43 @@ fleeButton.addEventListener("click", function () {
 
 negotiateButton.addEventListener("click", function () {});
 
-function startCombat() {
+function startCombat(enemy) {
   setUIInCombat();
   let playerInitiative = rollD10() + player.reflexes;
-  let enemyInitiative = rollD10() + bandit.reflexes;
+  let enemyInitiative = rollD10() + enemy.reflexes;
 
   while (enemyInitiative == playerInitiative) {
     playerInitiative = rollD10() + player.reflexes;
-    enemyInitiative = rollD10() + bandit.reflexes;
+    enemyInitiative = rollD10() + enemy.reflexes;
   }
 
   if (enemyInitiative > playerInitiative) {
-    participants = [bandit, player];
+    participants = [enemy, player];
   } else if (playerInitiative > enemyInitiative) {
-    participants = [player, bandit];
+    participants = [player, enemy];
   }
 
   console.log(participants);
 
-  while (player.hp > 0 && bandit.hp > 0) {
+  while (player.hp > 0 && enemy.hp > 0) {
     meleeAttack(participants[0], participants[1]);
     participants = participants.reverse();
   }
 
   if (player.hp <= 0) {
-    text.innerText += `\n You have been defeated by the bandit! Game over.`;
+    text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
     //todo: create a function for a new game
-  } else if (bandit.hp <= 0) {
-    text.innerText += `\n You have defeated the bandit.`;
-    player.crowns += bandit.crowns;
-    loot();
+  } else if (enemy.hp <= 0) {
+    text.innerText += `\n You have defeated the ${enemy.name}.`;
+    player.crowns += enemy.crowns;
+    loot(enemy);
     resetBandit();
     setUIInTravel();
   }
 }
 
-function loot() {
-  player.inventory.push(...bandit.inventory);
+function loot(enemy) {
+  player.inventory.push(...enemy.inventory);
 }
 
 function enemyTurn() {
