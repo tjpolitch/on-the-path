@@ -295,10 +295,11 @@ let bandit = new Enemy(
     {
       name: "Dagger",
       description:
-        "Daggers come in all kinds of shapes andsizes but they’re always small enough to hide. Everyone carries one, fromknights to peasants.",
+        "Daggers come in all kinds of shapes andsizes but they're always small enough to hide. Everyone carries one, fromknights to peasants.",
       weight: 1.1,
       rarity: 98,
       value: 12,
+      edible: false,
     },
     {
       name: "Stale Bread",
@@ -306,6 +307,7 @@ let bandit = new Enemy(
       weight: 0.5,
       rarity: 98,
       value: 12,
+      edible: true,
     },
     {
       name: "Bundle of Furs",
@@ -313,6 +315,7 @@ let bandit = new Enemy(
       weight: 4.5,
       rarity: 98,
       value: 35,
+      edible: false,
     },
   ], // inventory
   10 //crowns
@@ -477,6 +480,7 @@ const items = [
     weight: 0.1,
     rarity: 95,
     value: 5,
+    edible: true,
   },
   {
     name: "Medicinal Herbs",
@@ -485,6 +489,7 @@ const items = [
     weight: 0.2,
     rarity: 98,
     value: 15,
+    edible: false,
   },
   {
     name: "Mushrooms",
@@ -493,6 +498,7 @@ const items = [
     weight: 0.2,
     rarity: 95,
     value: 8,
+    edible: true,
   },
   {
     name: "Wild Game",
@@ -501,6 +507,7 @@ const items = [
     weight: 1,
     rarity: 98,
     value: 50,
+    edible: false,
   },
   {
     name: "Fresh Water Source",
@@ -509,6 +516,7 @@ const items = [
     weight: 0,
     rarity: 98,
     value: 20,
+    edible: true,
   },
   {
     name: "Edible Roots",
@@ -517,6 +525,7 @@ const items = [
     weight: 0.3,
     rarity: 98,
     value: 10,
+    edible: true,
   },
   {
     name: "Nuts",
@@ -525,6 +534,7 @@ const items = [
     weight: 0.2,
     rarity: 98,
     value: 7,
+    edible: true,
   },
   {
     name: "Edible Fungi",
@@ -532,6 +542,7 @@ const items = [
     weight: 0.3,
     rarity: 98,
     value: 12,
+    edible: true,
   },
 ];
 
@@ -1068,9 +1079,12 @@ function spendStamina(x, y) {
 
 function eat(x) {
   // will rejig this later to include a specific item
-  let eatenItem = player.inventory[0].name;
-  console.log(player.inventory[0]);
-  x.shift();
+  let eatenItem;
+
+  for (i = 0; i < x.length; i++) {
+    if (x[i].edible == true) eatenItem = x[i].name;
+    x.splice(i, 1);
+  }
   setEncumbrance();
   player.stamina += 30;
   player.hungry = false;
