@@ -1078,19 +1078,27 @@ function spendStamina(x, y) {
 }
 
 function eat(x) {
-  // will rejig this later to include a specific item
   let eatenItem;
-
-  for (i = 0; i < x.length; i++) {
-    if (x[i].edible == true) eatenItem = x[i].name;
-    x.splice(i, 1);
+  //will rejig this later to eat specific items
+  for (let i = 0; i < x.length; i++) {
+    if (x[i].edible == true) {
+      eatenItem = x[i].name;
+      console.log(eatenItem);
+      x.splice(i, 1);
+      break;
+    }
   }
-  setEncumbrance();
-  player.stamina += 30;
-  player.hungry = false;
-  text.innerText = `You eat ${eatenItem} and start to feel better.`;
-  forwardTime(9);
-  timeSinceEating = 0;
+
+  if (eatenItem) {
+    setEncumbrance();
+    player.stamina += 30;
+    player.hungry = false;
+    text.innerText = `You eat ${eatenItem} and start to feel better.`;
+    forwardTime(9);
+    timeSinceEating = 0;
+  } else {
+    text.innerText = `You don't have anything edible to eat.`;
+  }
 }
 
 eatButton.addEventListener("click", function () {
