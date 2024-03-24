@@ -291,7 +291,30 @@ let bandit = new Enemy(
   3, //stealth
   6, // swordsmanship
   5, // wildernessSurvival
-  ["Dagger", "Bandages", "Lockpicks"], // inventory
+  [
+    {
+      name: "Dagger",
+      description:
+        "Daggers come in all kinds of shapes andsizes but they’re always small enough to hide. Everyone carries one, fromknights to peasants.",
+      weight: 1.1,
+      rarity: 98,
+      value: 12,
+    },
+    {
+      name: "Stale Bread",
+      description: "A chunk of bread that was baked a day or two ago.",
+      weight: 0.5,
+      rarity: 98,
+      value: 12,
+    },
+    {
+      name: "Bundle of Furs",
+      description: "A collection of various furs and pelts.",
+      weight: 4.5,
+      rarity: 98,
+      value: 35,
+    },
+  ], // inventory
   10 //crowns
 );
 
@@ -1191,9 +1214,14 @@ function startCombat() {
   } else if (bandit.hp <= 0) {
     text.innerText += `\n You have defeated the bandit.`;
     player.crowns += bandit.crowns;
+    loot();
     resetBandit();
     setUIInTravel();
   }
+}
+
+function loot() {
+  player.inventory.push(...bandit.inventory);
 }
 
 function enemyTurn() {
