@@ -138,7 +138,8 @@ class Character {
     ritualCrafting,
     languages,
     inventory,
-    armor,
+    equippedWeapon,
+    equippedArmor,
     crowns,
     reputation,
     characterClass,
@@ -217,7 +218,8 @@ class Character {
     this.ritualCrafting = ritualCrafting;
     this.languages = languages;
     this.inventory = inventory;
-    this.armor = armor;
+    this.equippedWeapon = equippedWeapon;
+    this.equippedArmor = equippedArmor;
     this.crowns = crowns;
     this.reputation = reputation;
     this.characterClass = characterClass;
@@ -273,6 +275,8 @@ class Enemy {
     swordsmanship,
     wildernessSurvival,
     inventory,
+    equippedWeapon,
+    equippedArmor,
     crowns
   ) {
     this.name = name;
@@ -316,6 +320,8 @@ class Enemy {
     this.swordsmanship = swordsmanship;
     this.wildernessSurvival = wildernessSurvival;
     this.inventory = inventory;
+    this.equippedWeapon = equippedWeapon;
+    this.equippedArmor = equippedArmor;
     this.crowns = crowns;
   }
 }
@@ -379,6 +385,8 @@ let bandit = new Enemy(
       edible: false,
     },
   ], // inventory
+  [], // equippedWeapon
+  [], // equippedArmor
   10 //crowns
 );
 
@@ -450,8 +458,9 @@ const player = new Character(
   7, // resistCoercion
   6, // ritualCrafting
   ["common", "elder", "dwarven"], // languages
-  [ironLongSword], // inventory
-  10, //armor
+  [], // inventory
+  [], // equippedWeapon
+  [], // equippedArmor
   100, // crowns
   50, // reputation
   "witcher", // characterClass
