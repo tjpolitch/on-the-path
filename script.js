@@ -1,3 +1,73 @@
+class Weapon {
+  constructor(
+    name,
+    description,
+    damageType,
+    weaponAccuracy,
+    rarity,
+    damage,
+    reliability,
+    handsRequired,
+    range,
+    effect,
+    concealment,
+    enhancements,
+    weight,
+    value
+  ) {
+    this.name = name;
+    this.description = description;
+    this.type = damageType;
+    this.weaponAccuracy = weaponAccuracy;
+    this.rarity = rarity;
+    this.damage = damage;
+    this.reliability = reliability;
+    this.handsRequired = handsRequired;
+    this.range = range;
+    this.effect = effect;
+    this.concealment = concealment;
+    this.enhancements = enhancements;
+    this.weight = weight;
+    this.value = value;
+  }
+}
+
+// Create an instance of the Weapon class for the Dagger
+const dagger = new Weapon(
+  "Dagger", // name
+  "Daggers come in all kinds of shapes and sizes but they're always small enough to hide. Everyone carries one, from knights to peasants.", // description
+  "slashing/piercing", // damageType
+  0, // weaponAccuracy
+  99, // rarity
+  "1d6+2", // damage
+  10, // reliability
+  1, // handsRequired
+  "N/A", // range
+  [], // effect
+  "small", // concealment
+  0, // enhancements
+  0.5, // weight
+  50 // value
+);
+
+// Create an instance of the Weapon class for the Iron Long Sword
+const ironLongSword = new Weapon(
+  "Iron Long Sword", // name
+  "A standard long sword made of iron, suitable for slashing and thrusting attacks.", // description
+  "slashing/piercing", // damageType
+  0, // weaponAccuracy
+  99, // rarity
+  "2d6+2", // damage
+  10, // reliability
+  2, // handsRequired
+  "N/A", // range
+  [], // effect
+  "large", // concealment
+  0, // enhancements
+  1.5, // weight
+  160 // value
+);
+
 class Character {
   constructor(
     player,
@@ -293,15 +363,6 @@ let bandit = new Enemy(
   5, // wildernessSurvival
   [
     {
-      name: "Dagger",
-      description:
-        "Daggers come in all kinds of shapes andsizes but they're always small enough to hide. Everyone carries one, fromknights to peasants.",
-      weight: 1.1,
-      rarity: 98,
-      value: 12,
-      edible: false,
-    },
-    {
       name: "Stale Bread",
       description: "A chunk of bread that was baked a day or two ago.",
       weight: 0.5,
@@ -389,7 +450,7 @@ const player = new Character(
   7, // resistCoercion
   6, // ritualCrafting
   ["common", "elder", "dwarven"], // languages
-  [], // inventory (empty for now)
+  [ironLongSword], // inventory
   10, //armor
   100, // crowns
   50, // reputation
