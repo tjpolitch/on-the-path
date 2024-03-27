@@ -2,7 +2,7 @@ class Armor {
   constructor(
     name,
     description,
-    armorType,
+    armorType, // head, torso, leg, shield, set
     stoppingPower,
     rarity,
     armorEnhancements,
@@ -23,6 +23,45 @@ class Armor {
     this.value = value;
   }
 }
+
+const verdenArchersHood = new Armor(
+  "Verden Archer's Hood", // name
+  "A lightweight hood favored by archers in the Verden region.", //description
+  "head", // armorType
+  3, // stoppingPower
+  99, //rarity
+  null, // armorEnhancements
+  null, // effect
+  0, // encumbranceValue
+  0.5, // weight
+  100 // value
+);
+
+const gambeson = new Armor(
+  "Gambeson", // name
+  "A quilted garment providing basic protection against blunt and slashing attacks.", // description
+  "torso", // armorType (assuming the armor covers the torso)
+  3, // stoppingPower
+  99, // rarity
+  null, // armorEnhancements
+  null, // effect
+  0, // encumbranceValue
+  1, // weight
+  100 // value
+);
+
+const paddedTrousers = new Armor(
+  "Padded Trousers", // name
+  "Thick trousers lined with padding for additional protection.", // description
+  "legs", // armorType (assuming the armor covers the legs)
+  5, // stoppingPower
+  99, // rarity
+  null, // armorEnhancements
+  null, // effect
+  0, // encumbranceValue
+  1, // weight
+  125 // value
+);
 
 class Weapon {
   constructor(
