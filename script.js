@@ -39,7 +39,7 @@ const dagger = new Weapon(
   "slashing/piercing", // damageType
   0, // weaponAccuracy
   99, // rarity
-  "1d6+2", // damage
+  [1, 6, 2], // damage
   10, // reliability
   1, // handsRequired
   "N/A", // range
@@ -57,7 +57,7 @@ const ironLongSword = new Weapon(
   "slashing/piercing", // damageType
   0, // weaponAccuracy
   99, // rarity
-  "2d6+2", // damage
+  [2, 6, 2], // damage
   10, // reliability
   2, // handsRequired
   "N/A", // range
@@ -140,6 +140,7 @@ class Character {
     inventory,
     equippedWeapon,
     equippedArmor,
+    armor,
     crowns,
     reputation,
     characterClass,
@@ -220,6 +221,7 @@ class Character {
     this.inventory = inventory;
     this.equippedWeapon = equippedWeapon;
     this.equippedArmor = equippedArmor;
+    this.armor = armor;
     this.crowns = crowns;
     this.reputation = reputation;
     this.characterClass = characterClass;
@@ -237,7 +239,6 @@ class Enemy {
     name,
     threat,
     bounty,
-    armor,
     intellect,
     reflexes,
     dexterity,
@@ -277,12 +278,12 @@ class Enemy {
     inventory,
     equippedWeapon,
     equippedArmor,
+    armor,
     crowns
   ) {
     this.name = name;
     this.threat = threat;
     this.bounty = bounty;
-    this.armor = armor;
     this.intellect = intellect;
     this.reflexes = reflexes;
     this.dexterity = dexterity;
@@ -322,6 +323,7 @@ class Enemy {
     this.inventory = inventory;
     this.equippedWeapon = equippedWeapon;
     this.equippedArmor = equippedArmor;
+    this.armor = armor;
     this.crowns = crowns;
   }
 }
@@ -330,7 +332,6 @@ let bandit = new Enemy(
   "Bandit",
   ["easy", "simple"],
   10, // bounty
-  5, // armor
   3, // intellect
   6, // reflexes
   5, //dexterity
@@ -387,6 +388,7 @@ let bandit = new Enemy(
   ], // inventory
   [], // equippedWeapon
   [], // equippedArmor
+  5, //armor
   10 //crowns
 );
 
@@ -461,6 +463,7 @@ const player = new Character(
   [], // inventory
   [], // equippedWeapon
   [], // equippedArmor
+  10, // armor
   100, // crowns
   50, // reputation
   "witcher", // characterClass
@@ -484,6 +487,12 @@ const restMessages = [
   "You take it easy for a bit and notice your stamina improving.",
   "Pausing to rest, you feel a surge of energy returning.",
 ];
+
+//Add weapons to the player and bandit enemy as a quick fix
+player.inventory.push(ironLongSword);
+bandit.inventory.push(dagger);
+equipWeapon(player);
+equipWeapon(bandit);
 
 let date = new Date("1247-05-01T00:00:00");
 let month = date.getMonth();
@@ -509,8 +518,6 @@ let nightDifficulty = 3;
 let inventoryWeight = 0;
 let timeSinceEating = 0;
 let participants = [];
-
-const conditions = [];
 
 const attackButton = document.querySelector("#attackButton");
 const restButton = document.querySelector("#restButton");
@@ -1323,6 +1330,8 @@ function enemyTurn() {
 
 function selectEnemyAction() {}
 
+let damage = 0;
+
 function meleeAttack(attacker, defender) {
   rollD10();
   let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
@@ -1333,7 +1342,9 @@ function meleeAttack(attacker, defender) {
 
   if (attackResult > defendResult) {
     let bodyDamage = 0;
-    let damage = rollD6() + rollD6() + 2 - defender.armor;
+    //let damage = rollD6() + rollD6() + 2 - defender.armor;
+
+    damage = calculateWeaponDamage(attacker) - defender.armor;
     damage = Math.max(0, damage);
     if (attacker.body > defender.body) {
       bodyDamage = attacker.body - defender.body;
@@ -1430,8 +1441,13 @@ function equipWeapon(character) {
   text.innerText = "No weapon found in inventory.";
 }
 
-//Add weapons to the player and bandit enemy as a quick fix
-player.inventory.push(ironLongSword);
-bandit.inventory.push(dagger);
-equipWeapon(player);
-equipWeapon(bandit);
+function calculateWeaponDamage(character) {
+  damage = 0;
+  let damageArray = character.equippedWeapon.damage;
+  for (let i = 0; i < damageArray[0]; i++) {
+    damage += rollD6();
+  }
+  damage += damageArray[2];
+  console.log("damage is " + damage);
+  return damage;
+}
