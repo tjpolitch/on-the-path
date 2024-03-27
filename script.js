@@ -453,7 +453,7 @@ let bandit = new Enemy(
   ], // inventory
   [], // equippedWeapon
   [], // equippedArmor
-  5, //armor
+  0, //armor
   10 //crowns
 );
 
@@ -528,7 +528,7 @@ const player = new Character(
   [], // inventory
   [], // equippedWeapon
   [], // equippedArmor
-  10, // armor
+  0, // armor
   100, // crowns
   50, // reputation
   "witcher", // characterClass
@@ -555,9 +555,15 @@ const restMessages = [
 
 //Add weapons to the player and bandit enemy as a quick fix
 player.inventory.push(ironLongSword);
+player.inventory.push(verdenArchersHood);
+player.inventory.push(gambeson);
+player.inventory.push(paddedTrousers);
 bandit.inventory.push(dagger);
+bandit.inventory.push(gambeson);
 equipWeapon(player);
 equipWeapon(bandit);
+equipArmor(player);
+equipArmor(bandit);
 
 let date = new Date("1247-05-01T00:00:00");
 let month = date.getMonth();
@@ -1517,4 +1523,18 @@ function calculateWeaponDamage(character) {
   return damage;
 }
 
-function calculateArmor(character) {}
+function equipArmor(character) {
+  // equip all items of armor - needs to be adjusted late
+  for (let i = 0; i < character.inventory.length; i++) {
+    const item = character.inventory[i];
+    if (item instanceof Armor) {
+      character.equippedArmor.push(item);
+      //text.innerText = `Equipped ${item.name}.`; this messaging can be included later
+    }
+  }
+  // calculate equipped armor
+  for (let i = 0; i < character.equippedArmor.length; i++) {
+    character.armor += character.equippedArmor[i].stoppingPower;
+  }
+  return character.armor;
+}
