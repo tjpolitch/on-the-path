@@ -1413,3 +1413,25 @@ function landscapeMessage() {
   const message = landscapeMessages[randomIndex];
   text.innerText += message;
 }
+
+function equipWeapon(character) {
+  // Iterate through the character's inventory
+  for (let i = 0; i < character.inventory.length; i++) {
+    const item = character.inventory[i];
+    // Check if the item is a weapon
+    if (item instanceof Weapon) {
+      // Equip the weapon and exit the loop
+      character.equippedWeapon = item;
+      //text.innerText = `Equipped ${item.name}.`; this messaging can be included later
+      return;
+    }
+  }
+  // If no weapon is found, display a message
+  text.innerText = "No weapon found in inventory.";
+}
+
+//Add weapons to the player and bandit enemy as a quick fix
+player.inventory.push(ironLongSword);
+bandit.inventory.push(dagger);
+equipWeapon(player);
+equipWeapon(bandit);
