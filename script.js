@@ -1,3 +1,29 @@
+class Armor {
+  constructor(
+    name,
+    description,
+    armorType,
+    stoppingPower,
+    rarity,
+    armorEnhancements,
+    effect,
+    encumbranceValue,
+    weight,
+    value
+  ) {
+    this.name = name;
+    this.description = description;
+    this.armorType = armorType;
+    this.stoppingPower = stoppingPower;
+    this.rarity = rarity;
+    this.armorEnhancements = armorEnhancements;
+    this.effect = effect;
+    this.encumbranceValue = encumbranceValue;
+    this.weight = weight;
+    this.value = value;
+  }
+}
+
 class Weapon {
   constructor(
     name,
@@ -1451,3 +1477,5 @@ function calculateWeaponDamage(character) {
   console.log("damage is " + damage);
   return damage;
 }
+
+function calculateArmor(character) {}
