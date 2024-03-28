@@ -589,6 +589,7 @@ let nightDifficulty = 3;
 let inventoryWeight = 0;
 let timeSinceEating = 0;
 let participants = [];
+let damage = 0;
 
 const attackButton = document.querySelector("#attackButton");
 const restButton = document.querySelector("#restButton");
@@ -1374,7 +1375,7 @@ function startCombat(enemy) {
   console.log(participants);
 
   while (player.hp > 0 && enemy.hp > 0) {
-    meleeAttack(participants[0], participants[1]);
+    fastMeleeAttack(participants[0], participants[1]);
     participants = participants.reverse();
   }
 
@@ -1401,7 +1402,10 @@ function enemyTurn() {
 
 function selectEnemyAction() {}
 
-let damage = 0;
+function fastMeleeAttack(attacker, defender) {
+  meleeAttack(attacker, defender);
+  meleeAttack(attacker, defender);
+}
 
 function meleeAttack(attacker, defender) {
   rollD10();
