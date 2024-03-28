@@ -302,6 +302,7 @@ class Character {
 class Enemy {
   constructor(
     name,
+    enemyType,
     threat,
     bounty,
     intellect,
@@ -347,6 +348,7 @@ class Enemy {
     crowns
   ) {
     this.name = name;
+    this.enemyType = enemyType;
     this.threat = threat;
     this.bounty = bounty;
     this.intellect = intellect;
@@ -395,7 +397,7 @@ class Enemy {
 
 let bandit = new Enemy(
   "Bandit",
-  ["easy", "simple"],
+  "humanoid"[("easy", "simple")],
   10, // bounty
   3, // intellect
   6, // reflexes
@@ -726,6 +728,20 @@ const tempModifiers = {
   10: [2, 1, 0, 3, 4, 5, 6, 2],
   11: [-2, -3, -4, 0, 1, 2, 0, -1],
 };
+
+const humanDamageLocation = [
+  "Head",
+  "Torso",
+  "Torso",
+  "Torso",
+  "Torso",
+  "Right Arm",
+  "Left Arm",
+  "Right Leg",
+  "Right Leg",
+  "Left Leg",
+  "Left Leg",
+];
 
 const tempList = ["freezing", "cold", "cool", "mild", "warm", "hot"];
 const precList = [
@@ -1426,6 +1442,23 @@ function meleeAttack(attacker, defender) {
       damage = damage + bodyDamage;
     }
     defender.armor -= 1;
+
+    if (defender.enemyType == "humanoid") {
+      let hitLocationRoll = rollD10();
+      let hitLocation = humanDamageLocation[hitLocationRoll];
+
+      if (hitLocation == "Head") {
+        damage = damage * 3;
+      } else if (hitLocation == "Right Arm") {
+        damage = Math.floor(damage / 2);
+      } else if (hitLocation == "Left Arm") {
+        damage = Math.floor(damage / 2);
+      } else if (hitLocation == "Right Leg") {
+        damage = Math.floor(damage / 2);
+      } else if (hitLocation == "Left Leg") {
+        damage = Math.floor(damage / 2);
+      }
+    }
     defender.hp -= damage;
     text.innerText += `\n${attacker.name} attacks ${defender.name} for ${damage} damage!`;
   } else {
