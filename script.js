@@ -593,6 +593,7 @@ let inventoryWeight = 0;
 let timeSinceEating = 0;
 let participants = [];
 let damage = 0;
+let hitLocation = [];
 
 const attackButton = document.querySelector("#attackButton");
 const restButton = document.querySelector("#restButton");
@@ -1446,7 +1447,7 @@ function meleeAttack(attacker, defender) {
 
     if (defender.enemyType == "humanoid") {
       let hitLocationRoll = rollD10();
-      let hitLocation = humanDamageLocation[hitLocationRoll];
+      hitLocation = humanDamageLocation[hitLocationRoll];
 
       if (hitLocation == "Head") {
         damage = damage * 3;
@@ -1461,11 +1462,12 @@ function meleeAttack(attacker, defender) {
       }
     }
     defender.hp -= damage;
-    text.innerText += `\n${attacker.name} attacks ${defender.name} for ${damage} damage!`;
+    text.innerText += `\n${attacker.name} hits ${defender.name} in the ${hitLocation}for ${damage} damage!`;
   } else {
     text.innerText += `\n${attacker.name} attacks ${defender.name} but misses!`;
   }
   hpText.innerText = player.hp;
+  hitLocation = [];
 }
 
 function resetBandit() {
