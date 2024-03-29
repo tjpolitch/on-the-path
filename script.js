@@ -397,7 +397,8 @@ class Enemy {
 
 let bandit = new Enemy(
   "Bandit",
-  "humanoid"[("easy", "simple")],
+  "humanoid",
+  [("easy", "simple")],
   10, // bounty
   3, // intellect
   6, // reflexes
@@ -562,10 +563,10 @@ player.inventory.push(gambeson);
 player.inventory.push(paddedTrousers);
 bandit.inventory.push(dagger);
 bandit.inventory.push(gambeson);
+equipArmor(bandit);
 equipWeapon(player);
 equipWeapon(bandit);
 equipArmor(player);
-equipArmor(bandit);
 
 let date = new Date("1247-05-01T00:00:00");
 let month = date.getMonth();
@@ -1561,7 +1562,7 @@ function calculateWeaponDamage(character) {
 }
 
 function equipArmor(character) {
-  // equip all items of armor - needs to be adjusted late
+  // equip all items of armor - needs to be adjusted later
   for (let i = 0; i < character.inventory.length; i++) {
     const item = character.inventory[i];
     if (item instanceof Armor) {
