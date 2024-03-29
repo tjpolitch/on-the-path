@@ -37,6 +37,19 @@ const verdenArchersHood = new Armor(
   100 // value
 );
 
+const doubleWovenHood = new Armor(
+  "Double Woven Hood", // name
+  "A reinforced woven hood offering light protection.", //description
+  "head", // armorType
+  5, // stoppingPower
+  99, //rarity
+  null, // armorEnhancements
+  null, // effect
+  0, // encumbranceValue
+  1, // weight
+  175 // value
+);
+
 const gambeson = new Armor(
   "Gambeson", // name
   "A quilted garment providing basic protection against blunt and slashing attacks.", // description
@@ -48,6 +61,19 @@ const gambeson = new Armor(
   0, // encumbranceValue
   1, // weight
   100 // value
+);
+
+const aedirnianGambeson = new Armor(
+  "Aedirnian Gambeson", // name
+  "A quilted garment providing basic protection against blunt and slashing attacks. The Aedirnian style offers additonal protection.", // description
+  "torso", // armorType (assuming the armor covers the torso)
+  5, // stoppingPower
+  99, // rarity
+  null, // armorEnhancements
+  null, // effect
+  0, // encumbranceValue
+  1.5, // weight
+  175 // value
 );
 
 const paddedTrousers = new Armor(
@@ -561,8 +587,9 @@ player.inventory.push(ironLongSword);
 player.inventory.push(verdenArchersHood);
 player.inventory.push(gambeson);
 player.inventory.push(paddedTrousers);
+bandit.inventory.push(paddedTrousers);
 bandit.inventory.push(dagger);
-bandit.inventory.push(gambeson);
+bandit.inventory.push(aedirnianGambeson);
 equipArmor(bandit);
 equipWeapon(player);
 equipWeapon(bandit);
