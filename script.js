@@ -1392,8 +1392,13 @@ function startCombat(enemy) {
   console.log(participants);
 
   while (player.hp > 0 && enemy.hp > 0) {
-    fastMeleeAttack(participants[0], participants[1]);
-    participants = participants.reverse();
+    if (participants[0] == player) {
+      fastMeleeAttack(participants[0], participants[1]);
+      participants = participants.reverse();
+    } else if (participants[0] != player) {
+      meleeAttack(participants[0], participants[1]);
+      participants = participants.reverse();
+    }
   }
 
   if (player.hp <= 0) {
