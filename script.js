@@ -1417,11 +1417,6 @@ function loot(enemy) {
   player.inventory.push(...enemy.inventory);
 }
 
-function enemyTurn() {
-  let target = player; //a function to choose a member of a players party can be added later
-  let action = selectEnemyAction;
-}
-
 function selectEnemyAction() {}
 
 function fastMeleeAttack(attacker, defender) {
