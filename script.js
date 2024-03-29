@@ -582,19 +582,6 @@ const restMessages = [
   "Pausing to rest, you feel a surge of energy returning.",
 ];
 
-//Add weapons to the player and bandit enemy as a quick fix
-player.inventory.push(ironLongSword);
-player.inventory.push(verdenArchersHood);
-player.inventory.push(gambeson);
-player.inventory.push(paddedTrousers);
-bandit.inventory.push(paddedTrousers);
-bandit.inventory.push(dagger);
-bandit.inventory.push(aedirnianGambeson);
-equipArmor(bandit);
-equipWeapon(player);
-equipWeapon(bandit);
-equipArmor(player);
-
 let date = new Date("1247-05-01T00:00:00");
 let month = date.getMonth();
 let day = date.getDate();
@@ -1606,3 +1593,19 @@ eatButton.addEventListener("click", function () {
   }
   staminaText.innerText = player.stamina;
 });
+
+//CONFIGURATION FOR TESTING -----------------
+
+//Add weapons to the player and bandit enemy as a quick fix
+player.inventory.push(ironLongSword);
+player.inventory.push(verdenArchersHood);
+player.inventory.push(gambeson);
+player.inventory.push(paddedTrousers);
+bandit.inventory.push(paddedTrousers);
+bandit.inventory.push(dagger);
+bandit.inventory.push(aedirnianGambeson);
+equipArmor(bandit);
+equipWeapon(player);
+equipWeapon(bandit);
+equipArmor(player);
+setEncumbrance();
