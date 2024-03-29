@@ -1093,9 +1093,39 @@ function skillCheckOpposed(playerSkill, playerStat, enemySkill, enemyStat) {
   }
 }
 
-function rollD10() {
+//To be used for rolls that would not include critials e.g. hit location roll
+function roll10() {
   roll = Math.floor(Math.random() * 10) + 1;
   console.log(roll);
+  return roll;
+}
+
+// To be used for rolls that include criticals
+function rollD10() {
+  let totalRoll = 0;
+  do {
+    roll = Math.floor(Math.random() * 10) + 1;
+    console.log("Rolled:" + roll);
+
+    if (roll === 10) {
+      totalRoll += roll;
+      console.log("Dice exploded on 10, rolling again...");
+    } else if (roll === 1) {
+      console.log("Dice exploded on 1, rolling again...");
+      let nextRoll = Math.floor(Math.random() * 10) + 1;
+      console.log("Next roll is " + nextRoll);
+      totalRoll -= nextRoll;
+      if (nextRoll === 10) {
+        console.log("Dice exploded on 10, rolling again...");
+        totalRoll -= nextRoll;
+      }
+    } else {
+      totalRoll += roll;
+    }
+  } while (roll === 10 || roll === 1);
+
+  console.log("Total:" + totalRoll);
+  roll = totalRoll;
   return roll;
 }
 
@@ -1293,7 +1323,7 @@ function meleeAttack(attacker, defender) {
     defender.armor -= 1;
 
     if (defender.enemyType == "humanoid") {
-      let hitLocationRoll = rollD10();
+      let hitLocationRoll = roll10();
       hitLocation = humanDamageLocation[hitLocationRoll];
 
       if (hitLocation == "Head") {
