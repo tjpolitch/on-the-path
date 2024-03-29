@@ -1451,18 +1451,17 @@ function meleeAttack(attacker, defender) {
 
       if (hitLocation == "Head") {
         damage = damage * 3;
-      } else if (hitLocation == "Right Arm") {
-        damage = Math.floor(damage / 2);
-      } else if (hitLocation == "Left Arm") {
-        damage = Math.floor(damage / 2);
-      } else if (hitLocation == "Right Leg") {
-        damage = Math.floor(damage / 2);
-      } else if (hitLocation == "Left Leg") {
+      } else if (
+        hitLocation == "Right Arm" ||
+        "Left Arm" ||
+        "Right Leg" ||
+        "Left Leg"
+      ) {
         damage = Math.floor(damage / 2);
       }
     }
     defender.hp -= damage;
-    text.innerText += `\n${attacker.name} hits ${defender.name} in the ${hitLocation}for ${damage} damage!`;
+    text.innerText += `\n${attacker.name} hits ${defender.name} in the ${hitLocation} for ${damage} damage!`;
   } else {
     text.innerText += `\n${attacker.name} attacks ${defender.name} but misses!`;
   }
