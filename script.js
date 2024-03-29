@@ -965,18 +965,6 @@ function tellLight(month, dayPart) {
   lightText.innerText = lightList[lightLevel];
 }
 
-restButton.addEventListener("click", function () {
-  tellTime(240);
-  player.stamina += 40;
-  staminaText.innerText = player.stamina;
-  player.rested = true;
-
-  const randomIndex = Math.floor(Math.random() * restMessages.length);
-  const message = restMessages[randomIndex];
-
-  text.innerText = message;
-});
-
 function tellTemp() {
   if (temp < 1) {
     weather = tempList[0];
@@ -1025,6 +1013,463 @@ function setTerrain() {
   currentTerrain = testMap[xCoordinate][yCoordinate];
   terrainText.innerText = terrainTypes[currentTerrain];
 }
+
+function terrainBounds() {
+  text.innerText = "You have reached impassable terrain.";
+}
+
+// Function to simulate foraging in the immediate area - a fail means that an hour goes forward and a success means that one item is found and the time goes forward less than an hour
+function forage() {
+  let found = false;
+  skillCheckDC(foragingSkill, foragingDC);
+
+  // todo: include a loop so that if no item is found below chance, the loop repeats
+
+  if (passed === true) {
+    do {
+      items.forEach((item) => {
+        const chance = Math.random() * 100; // Generate a random number between 0 and 100
+        //console.log("chance: " + chance);
+        if (chance >= item.rarity) {
+          foundItems.push(item);
+          found = true;
+          return;
+        }
+      });
+    } while (!found);
+    timeSpent = Math.floor(Math.random() * 60);
+    displayFoundItems();
+  } else {
+    text.innerText = `You spent an hour foragaing but couldn't find anything.`;
+    timeSpent = 60;
+  }
+  spendStamina(player, 1);
+  tellTime(timeSpent);
+  setEncumbrance();
+}
+
+forageButton.addEventListener("click", function () {
+  forage();
+  console.log("found items: " + foundItems[0]);
+  console.log(JSON.stringify(foundItems));
+
+  if (foundItems.length > 0) {
+    player.inventory.push(...foundItems);
+    displayFoundItems();
+  }
+  player.inventory.sort();
+  foundItems = [];
+  console.log("inventory is: " + player.inventory[0]);
+  setEncumbrance();
+});
+
+// Function to display found items
+function displayFoundItems() {
+  let foundText = "You found the following items while foraging:";
+  foundItems.forEach((item) => {
+    foundText += ` ${item.name},`;
+  });
+  foundText = foundText.slice(0, -1); // Remove the last comma
+  text.innerText = foundText;
+}
+
+// later on I can add parameters for player/character/monster + skill e.g. skillCheck(player, foraging)
+function skillCheckDC(skill, dc) {
+  rollD10();
+  let result = skill + roll;
+  if (result >= dc) {
+    passed = true;
+  } else {
+    passed = false;
+  }
+  console.log(passed);
+  return passed;
+}
+
+function skillCheckOpposed(playerSkill, playerStat, enemySkill, enemyStat) {
+  rollD10();
+  let playerResult = playerSkill + playerStat + roll;
+  rollD10();
+  let enemyResult = enemySkill + enemyStat + roll;
+
+  while (playerResult == enemyResult) {
+    rollD10();
+    playerResult = playerSkill + playerStat + roll;
+    rollD10();
+    enemyResult = enemySkill + enemyStat + roll;
+  }
+
+  if (playerResult > enemyResult) {
+    passed = true;
+  } else {
+    passed = false;
+  }
+}
+
+function rollD10() {
+  roll = Math.floor(Math.random() * 10) + 1;
+  console.log(roll);
+  return roll;
+}
+
+function rollD6() {
+  roll = Math.floor(Math.random() * 6) + 1;
+  console.log(roll);
+  return roll;
+}
+
+function calculateTimeSpent() {
+  timeSpent = Math.floor(Math.random() * 60) + 1;
+}
+
+function tellStats(x) {
+  xpText.innerText = x.xp;
+  hpText.innerText = x.hp;
+  staminaText.innerText = x.stamina;
+}
+
+function spendStamina(x, y) {
+  x.stamina = x.stamina - (Math.floor(Math.random() * y) + 1);
+}
+
+function eat(x) {
+  let eatenItem;
+  //will rejig this later to eat specific items
+  for (let i = 0; i < x.length; i++) {
+    if (x[i].edible == true) {
+      eatenItem = x[i].name;
+      console.log(eatenItem);
+      x.splice(i, 1);
+      break;
+    }
+  }
+
+  if (eatenItem) {
+    setEncumbrance();
+    player.stamina += 30;
+    player.hungry = false;
+    text.innerText = `You eat ${eatenItem} and start to feel better.`;
+    forwardTime(9);
+    timeSinceEating = 0;
+  } else {
+    text.innerText = `You don't have anything edible to eat.`;
+  }
+}
+
+function weighInventory() {
+  inventoryWeight = 0;
+  for (let i = 0; i < player.inventory.length; i++) {
+    inventoryWeight += player.inventory[i].weight;
+  }
+  inventoryWeightText.innerText = inventoryWeight.toFixed(1);
+}
+
+function setEncumbrance() {
+  weighInventory();
+  encumbranceStatText.innerText = player.encumbrance;
+
+  if (inventoryWeight > player.encumbrance) {
+    text.innerText = "You are over encumbered.";
+  }
+}
+
+function createEncounter() {
+  //need to include  generation of an enemy here
+
+  setUIInEncounter();
+}
+
+function rollEncounter() {
+  rollD10();
+  if (roll == 1) {
+    createEncounter();
+  }
+}
+
+function setUIInEncounter() {
+  text.innerText +=
+    "\nAs you wander through the forest, you encounter a bandit blocking your path.";
+  fightButton.style.display = "inline";
+  negotiateButton.style.display = "inline";
+  fleeButton.style.display = "inline";
+  restButton.style.display = "none";
+  forageButton.style.display = "none";
+  eatButton.style.display = "none";
+  attackButton.style.display = "none";
+
+  northButton.style.display = "none";
+  southButton.style.display = "none";
+  eastButton.style.display = "none";
+  westButton.style.display = "none";
+  southEastButton.style.display = "none";
+  southWestButton.style.display = "none";
+  northEastButton.style.display = "none";
+  northWestButton.style.display = "none";
+  stayButton.style.display = "none";
+}
+
+function setUIInTravel() {
+  restButton.style.display = "inline";
+  forageButton.style.display = "inline";
+  eatButton.style.display = "inline";
+  fightButton.style.display = "none";
+  negotiateButton.style.display = "none";
+  fleeButton.style.display = "none";
+  attackButton.style.display = "none";
+
+  northButton.style.display = "inline";
+  southButton.style.display = "inline";
+  eastButton.style.display = "inline";
+  westButton.style.display = "inline";
+  southEastButton.style.display = "inline";
+  southWestButton.style.display = "inline";
+  northEastButton.style.display = "inline";
+  northWestButton.style.display = "inline";
+  stayButton.style.display = "inline";
+}
+
+function setUIInCombat() {
+  attackButton.style.display = "inline";
+  fightButton.style.display = "none";
+  text.innerText = "You stand your ground and prepare to fight.";
+}
+
+function startCombat(enemy) {
+  setUIInCombat();
+  let playerInitiative = rollD10() + player.reflexes;
+  let enemyInitiative = rollD10() + enemy.reflexes;
+
+  while (enemyInitiative == playerInitiative) {
+    playerInitiative = rollD10() + player.reflexes;
+    enemyInitiative = rollD10() + enemy.reflexes;
+  }
+
+  if (enemyInitiative > playerInitiative) {
+    participants = [enemy, player];
+  } else if (playerInitiative > enemyInitiative) {
+    participants = [player, enemy];
+  }
+
+  console.log(participants);
+
+  while (player.hp > 0 && enemy.hp > 0) {
+    if (participants[0] == player) {
+      fastMeleeAttack(participants[0], participants[1]);
+      participants = participants.reverse();
+    } else if (participants[0] != player) {
+      meleeAttack(participants[0], participants[1]);
+      participants = participants.reverse();
+    }
+  }
+
+  if (player.hp <= 0) {
+    text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
+    //todo: create a function for a new game
+  } else if (enemy.hp <= 0) {
+    text.innerText += `\n You have defeated the ${enemy.name}.`;
+    player.crowns += enemy.crowns;
+    loot(enemy);
+    resetBandit();
+    setUIInTravel();
+  }
+}
+
+function loot(enemy) {
+  player.inventory.push(...enemy.inventory);
+}
+
+function selectEnemyAction() {}
+
+function fastMeleeAttack(attacker, defender) {
+  meleeAttack(attacker, defender);
+  meleeAttack(attacker, defender);
+}
+
+function meleeAttack(attacker, defender) {
+  rollD10();
+  let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
+  console.log(`Attacker rolls ${attackResult}`);
+  rollD10();
+  let defendResult = defender.dodgeEscape + defender.reflexes + roll; //defenders are automatically dodging for now
+  console.log(`Defender rolls ${defendResult}`);
+
+  if (attackResult > defendResult) {
+    let bodyDamage = 0;
+    //let damage = rollD6() + rollD6() + 2 - defender.armor;
+
+    damage = calculateWeaponDamage(attacker) - defender.armor;
+    damage = Math.max(0, damage);
+    if (attacker.body > defender.body) {
+      bodyDamage = attacker.body - defender.body;
+      damage = damage + bodyDamage;
+    }
+    defender.armor -= 1;
+
+    if (defender.enemyType == "humanoid") {
+      let hitLocationRoll = rollD10();
+      hitLocation = humanDamageLocation[hitLocationRoll];
+
+      if (hitLocation == "Head") {
+        damage = damage * 3;
+      } else if (
+        hitLocation == "Right Arm" ||
+        "Left Arm" ||
+        "Right Leg" ||
+        "Left Leg"
+      ) {
+        damage = Math.floor(damage / 2);
+      }
+    }
+    defender.hp -= damage;
+    text.innerText += `\n${attacker.name} hits ${defender.name} in the ${hitLocation} for ${damage} damage!`;
+  } else {
+    text.innerText += `\n${attacker.name} attacks ${defender.name} but misses!`;
+  }
+  hpText.innerText = player.hp;
+  hitLocation = [];
+}
+
+function resetBandit() {
+  bandit.hp = 20;
+}
+
+function equipWeapon(character) {
+  // Iterate through the character's inventory
+  for (let i = 0; i < character.inventory.length; i++) {
+    const item = character.inventory[i];
+    // Check if the item is a weapon
+    if (item instanceof Weapon) {
+      // Equip the weapon and exit the loop
+      character.equippedWeapon = item;
+      //text.innerText = `Equipped ${item.name}.`; this messaging can be included later
+      return;
+    }
+  }
+  // If no weapon is found, display a message
+  text.innerText = "No weapon found in inventory.";
+}
+
+function calculateWeaponDamage(character) {
+  damage = 0;
+  let damageArray = character.equippedWeapon.damage;
+  for (let i = 0; i < damageArray[0]; i++) {
+    damage += rollD6();
+  }
+  damage += damageArray[2];
+  console.log("damage is " + damage);
+  return damage;
+}
+
+function equipArmor(character) {
+  // equip all items of armor - needs to be adjusted later
+  for (let i = 0; i < character.inventory.length; i++) {
+    const item = character.inventory[i];
+    if (item instanceof Armor) {
+      character.equippedArmor.push(item);
+      //text.innerText = `Equipped ${item.name}.`; this messaging can be included later
+    }
+  }
+  // calculate equipped armor
+  for (let i = 0; i < character.equippedArmor.length; i++) {
+    character.armor += character.equippedArmor[i].stoppingPower;
+  }
+  return character.armor;
+}
+
+function landscapeMessage() {
+  const landscapeMessages = [
+    "\nYou walk through a dense forest, the ancient trees towering above you like silent sentinels.",
+    "\nThe winding path leads you through a rugged mountain pass, the jagged peaks obscured by swirling mists.",
+    "\nA vast plain stretches out before you, the tall grass rustling in the breeze as you make your way across the open expanse.",
+    "\nYou follow a meandering river through a tranquil valley, the sound of rushing water soothing your weary soul.",
+    "\nThe road takes you through a desolate moorland, the bleak landscape stretching out in all directions under the grey sky.",
+    "\nA winding trail leads you through a mystical grove, where ethereal wisps dance among the ancient trees.",
+    "\nYou traverse a rocky coastline, the crashing waves sending salty spray into the air as you navigate the treacherous cliffs.",
+    "\nThe path winds through a sun-dappled forest, the chirping of birds and buzzing of insects filling the air with life.",
+    "\nYou stumble upon the ruins of an ancient fortress, its crumbling walls standing as a testament to the passage of time.",
+    "\nA sprawling meadow unfolds before you, dotted with vibrant wildflowers and buzzing with the hum of bees.",
+    "\nYou come across a hidden waterfall, its cascading waters shimmering in the sunlight as they tumble into a crystal-clear pool below.",
+    "\nA mysterious fog rolls in from the marshes, cloaking the landscape in an eerie silence as you tread cautiously through the mist.",
+    "\nYou journey through a serene woodland, the trees whispering ancient secrets as you pass by.",
+    "\nA towering mountain looms in the distance, its snow-capped peak disappearing into the clouds above.",
+    "\nYou stumble upon a forgotten graveyard, its weather-worn headstones standing as solemn markers of lives long past.",
+    "\nThe path leads you through a bustling marketplace, the scent of spices and the sounds of haggling merchants filling the air with energy.",
+    "\nYou come across a quaint village nestled in the hills, its thatched-roof cottages exuding a rustic charm.",
+    "\nA shimmering oasis appears on the horizon, its sparkling waters a welcome respite from the harsh desert sands.",
+    "\nYou journey through a dense swamp, the murky waters teeming with hidden dangers lurking just below the surface.",
+    "\nA majestic castle looms on the horizon, its towering spires reaching towards the heavens as you approach the imposing fortress.",
+    "\nYou stumble upon a hidden cave entrance, its dark depths beckoning you to explore the mysteries that lie within.",
+    "\nThe path leads you through a tranquil glade, where shafts of sunlight filter through the canopy above, casting dappled shadows on the forest floor.",
+    "\nYou come across a sprawling vineyard, its neatly-tended rows of grapevines stretching as far as the eye can see.",
+    "\nA mysterious stone circle stands before you, its weathered stones bearing ancient runes that hint at forgotten rituals and arcane powers.",
+    "\nYou journey through a windswept plain, the tall grass bending in the breeze as you make your way across the open expanse.",
+    "\nA towering waterfall cascades down the side of a sheer cliff, its thundering roar echoing through the canyon below.",
+    "\nYou stumble upon a hidden glen, its lush greenery providing a welcome respite from the harsh wilderness beyond.",
+    "\nThe path leads you through a dense thicket, where tangled underbrush and twisted vines make progress slow and arduous.",
+    "\nYou come across a sunken shipwreck, its rotting timbers a haunting reminder of the dangers that lurk beneath the waves.",
+    "\nA crumbling stone bridge spans a chasm before you, its ancient arches standing as a testament to the engineering prowess of long-forgotten civilizations.",
+    "\nYou journey through a windswept desert, the shifting sands forming intricate patterns beneath your feet as you trek across the barren landscape.",
+    "\nA towering statue looms on the horizon, its weathered features carved with a sense of solemn majesty that speaks to the passage of ages.",
+    "\nYou stumble upon a hidden glade, its tranquil beauty belying the dangers that lurk in the shadows of the surrounding forest.",
+    "\nThe path leads you through a mist-shrouded marsh, where twisted trees and tangled roots form a labyrinthine maze that seems to shift and change with every step.",
+    "\nYou come across a crumbling castle ruin, its ivy-covered walls standing as a silent testament to the once-great kingdom that now lies in ruin.",
+    "\nA mysterious standing stone marks the center of a forgotten clearing, its weathered surface adorned with intricate carvings that hint at a lost civilization.",
+    "\nYou journey through a moonlit forest, where the whispering of the wind through the trees and the hooting of owls create an atmosphere of eerie tranquility.",
+    "\nA towering mountain range stretches out before you, its snow-capped peaks disappearing into the clouds as you contemplate the journey ahead.",
+    "\nYou stumble upon a hidden cave entrance, its yawning maw beckoning you to explore the dark depths that lie beyond.",
+    "\nThe path leads you through a dense jungle, where towering trees and lush foliage form a verdant canopy overhead.",
+    "\nYou come across a secluded waterfall, its crystal-clear waters cascading down from a moss-covered cliff into a tranquil pool below.",
+    "\nA mysterious stone circle stands before you, its weathered stones bearing ancient runes that hint at forgotten rituals and arcane powers.",
+    "\nYou journey through a windswept plain, the tall grass bending in the breeze as you make your way across the open expanse.",
+    "\nA towering waterfall cascades down the side of a sheer cliff, its thundering roar echoing through the canyon below.",
+    "\nYou stumble upon a hidden glen, its lush greenery providing a welcome respite from the harsh wilderness beyond.",
+    "\nThe path leads you through a dense thicket, where tangled underbrush and twisted vines make progress slow and arduous.",
+    "\nYou come across a sunken shipwreck, its rotting timbers a haunting reminder of the dangers that lurk beneath the waves.",
+    "\nA crumbling stone bridge spans a chasm before you, its ancient arches standing as a testament to the engineering prowess of long-forgotten civilizations.",
+    "\nYou journey through a windswept desert, the shifting sands forming intricate patterns beneath your feet as you trek across the barren landscape.",
+    "\nA towering statue looms on the horizon, its weathered features carved with a sense of solemn majesty that speaks to the passage of ages.",
+    "\nYou stumble upon a hidden glade, its tranquil beauty belying the dangers that lurk in the shadows of the surrounding forest.",
+    "\nThe path leads you through a mist-shrouded marsh, where twisted trees and tangled roots form a labyrinthine maze that seems to shift and change with every step.",
+    "\nYou come across a crumbling castle ruin, its ivy-covered walls standing as a silent testament to the once-great kingdom that now lies in ruin.",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * landscapeMessages.length);
+  const message = landscapeMessages[randomIndex];
+  text.innerText += message;
+}
+
+//EVENT LISTENERS-----------------------------------------------------------------
+
+fightButton.addEventListener("click", function () {
+  startCombat(bandit);
+});
+
+fleeButton.addEventListener("click", function () {
+  skillCheckOpposed(
+    player.dodgeEscape,
+    player.reflexes,
+    bandit.dodgeEscape,
+    bandit.reflexes
+  );
+  if (passed == true) {
+    text.innerText = "You flee the fight and run into the forest.";
+    setUIInTravel();
+  } else {
+    text.innerText = "You try to flee but the enemy catches up to you.";
+  }
+});
+
+restButton.addEventListener("click", function () {
+  tellTime(240);
+  player.stamina += 40;
+  staminaText.innerText = player.stamina;
+  player.rested = true;
+
+  const randomIndex = Math.floor(Math.random() * restMessages.length);
+  const message = restMessages[randomIndex];
+
+  text.innerText = message;
+});
 
 northButton.addEventListener("click", function () {
   if (yCoordinate > 0) {
@@ -1141,113 +1586,7 @@ northEastButton.addEventListener("click", function () {
   }
 });
 
-function terrainBounds() {
-  text.innerText = "You have reached impassable terrain.";
-}
-
-// Function to simulate foraging in the immediate area - a fail means that an hour goes forward and a success means that one item is found and the time goes forward less than an hour
-function forage() {
-  let found = false;
-  skillCheckDC(foragingSkill, foragingDC);
-
-  // todo: include a loop so that if no item is found below chance, the loop repeats
-
-  if (passed === true) {
-    do {
-      items.forEach((item) => {
-        const chance = Math.random() * 100; // Generate a random number between 0 and 100
-        //console.log("chance: " + chance);
-        if (chance >= item.rarity) {
-          foundItems.push(item);
-          found = true;
-          return;
-        }
-      });
-    } while (!found);
-    timeSpent = Math.floor(Math.random() * 60);
-    displayFoundItems();
-  } else {
-    text.innerText = `You spent an hour foragaing but couldn't find anything.`;
-    timeSpent = 60;
-  }
-  spendStamina(player, 1);
-  tellTime(timeSpent);
-  setEncumbrance();
-}
-
-forageButton.addEventListener("click", function () {
-  forage();
-  console.log("found items: " + foundItems[0]);
-  console.log(JSON.stringify(foundItems));
-
-  if (foundItems.length > 0) {
-    player.inventory.push(...foundItems);
-    displayFoundItems();
-  }
-  player.inventory.sort();
-  foundItems = [];
-  console.log("inventory is: " + player.inventory[0]);
-  setEncumbrance();
-});
-
-// Function to display found items
-function displayFoundItems() {
-  let foundText = "You found the following items while foraging:";
-  foundItems.forEach((item) => {
-    foundText += ` ${item.name},`;
-  });
-  foundText = foundText.slice(0, -1); // Remove the last comma
-  text.innerText = foundText;
-}
-
-// later on I can add parameters for player/character/monster + skill e.g. skillCheck(player, foraging)
-function skillCheckDC(skill, dc) {
-  rollD10();
-  let result = skill + roll;
-  if (result >= dc) {
-    passed = true;
-  } else {
-    passed = false;
-  }
-  console.log(passed);
-  return passed;
-}
-
-function skillCheckOpposed(playerSkill, playerStat, enemySkill, enemyStat) {
-  rollD10();
-  let playerResult = playerSkill + playerStat + roll;
-  rollD10();
-  let enemyResult = enemySkill + enemyStat + roll;
-
-  while (playerResult == enemyResult) {
-    rollD10();
-    playerResult = playerSkill + playerStat + roll;
-    rollD10();
-    enemyResult = enemySkill + enemyStat + roll;
-  }
-
-  if (playerResult > enemyResult) {
-    passed = true;
-  } else {
-    passed = false;
-  }
-}
-
-function rollD10() {
-  roll = Math.floor(Math.random() * 10) + 1;
-  console.log(roll);
-  return roll;
-}
-
-function rollD6() {
-  roll = Math.floor(Math.random() * 6) + 1;
-  console.log(roll);
-  return roll;
-}
-
-function calculateTimeSpent() {
-  timeSpent = Math.floor(Math.random() * 60) + 1;
-}
+negotiateButton.addEventListener("click", function () {});
 
 inventoryButton.addEventListener("click", function () {
   player.inventory.sort((a, b) => {
@@ -1261,346 +1600,9 @@ inventoryButton.addEventListener("click", function () {
   text.innerText = inventoryText;
 });
 
-function tellStats(x) {
-  xpText.innerText = x.xp;
-  hpText.innerText = x.hp;
-  staminaText.innerText = x.stamina;
-}
-
-function spendStamina(x, y) {
-  x.stamina = x.stamina - (Math.floor(Math.random() * y) + 1);
-}
-
-function eat(x) {
-  let eatenItem;
-  //will rejig this later to eat specific items
-  for (let i = 0; i < x.length; i++) {
-    if (x[i].edible == true) {
-      eatenItem = x[i].name;
-      console.log(eatenItem);
-      x.splice(i, 1);
-      break;
-    }
-  }
-
-  if (eatenItem) {
-    setEncumbrance();
-    player.stamina += 30;
-    player.hungry = false;
-    text.innerText = `You eat ${eatenItem} and start to feel better.`;
-    forwardTime(9);
-    timeSinceEating = 0;
-  } else {
-    text.innerText = `You don't have anything edible to eat.`;
-  }
-}
-
 eatButton.addEventListener("click", function () {
   if (player.inventory.length > 0) {
     eat(player.inventory);
   }
   staminaText.innerText = player.stamina;
 });
-
-function weighInventory() {
-  inventoryWeight = 0;
-  for (let i = 0; i < player.inventory.length; i++) {
-    inventoryWeight += player.inventory[i].weight;
-  }
-  inventoryWeightText.innerText = inventoryWeight.toFixed(1);
-}
-
-function setEncumbrance() {
-  weighInventory();
-  encumbranceStatText.innerText = player.encumbrance;
-
-  if (inventoryWeight > player.encumbrance) {
-    text.innerText = "You are over encumbered.";
-  }
-}
-
-function createEncounter() {
-  //need to include  generation of an enemy here
-
-  setUIInEncounter();
-}
-
-function rollEncounter() {
-  rollD10();
-  if (roll == 1) {
-    createEncounter();
-  }
-}
-
-function setUIInEncounter() {
-  text.innerText +=
-    "\nAs you wander through the forest, you encounter a bandit blocking your path.";
-  fightButton.style.display = "inline";
-  negotiateButton.style.display = "inline";
-  fleeButton.style.display = "inline";
-  restButton.style.display = "none";
-  forageButton.style.display = "none";
-  eatButton.style.display = "none";
-  attackButton.style.display = "none";
-
-  northButton.style.display = "none";
-  southButton.style.display = "none";
-  eastButton.style.display = "none";
-  westButton.style.display = "none";
-  southEastButton.style.display = "none";
-  southWestButton.style.display = "none";
-  northEastButton.style.display = "none";
-  northWestButton.style.display = "none";
-  stayButton.style.display = "none";
-}
-
-function setUIInTravel() {
-  restButton.style.display = "inline";
-  forageButton.style.display = "inline";
-  eatButton.style.display = "inline";
-  fightButton.style.display = "none";
-  negotiateButton.style.display = "none";
-  fleeButton.style.display = "none";
-  attackButton.style.display = "none";
-
-  northButton.style.display = "inline";
-  southButton.style.display = "inline";
-  eastButton.style.display = "inline";
-  westButton.style.display = "inline";
-  southEastButton.style.display = "inline";
-  southWestButton.style.display = "inline";
-  northEastButton.style.display = "inline";
-  northWestButton.style.display = "inline";
-  stayButton.style.display = "inline";
-}
-
-function setUIInCombat() {
-  attackButton.style.display = "inline";
-  fightButton.style.display = "none";
-  text.innerText = "You stand your ground and prepare to fight.";
-}
-
-fightButton.addEventListener("click", function () {
-  startCombat(bandit);
-});
-
-fleeButton.addEventListener("click", function () {
-  skillCheckOpposed(
-    player.dodgeEscape,
-    player.reflexes,
-    bandit.dodgeEscape,
-    bandit.reflexes
-  );
-  if (passed == true) {
-    text.innerText = "You flee the fight and run into the forest.";
-    setUIInTravel();
-  } else {
-    text.innerText = "You try to flee but the enemy catches up to you.";
-  }
-});
-
-negotiateButton.addEventListener("click", function () {});
-
-function startCombat(enemy) {
-  setUIInCombat();
-  let playerInitiative = rollD10() + player.reflexes;
-  let enemyInitiative = rollD10() + enemy.reflexes;
-
-  while (enemyInitiative == playerInitiative) {
-    playerInitiative = rollD10() + player.reflexes;
-    enemyInitiative = rollD10() + enemy.reflexes;
-  }
-
-  if (enemyInitiative > playerInitiative) {
-    participants = [enemy, player];
-  } else if (playerInitiative > enemyInitiative) {
-    participants = [player, enemy];
-  }
-
-  console.log(participants);
-
-  while (player.hp > 0 && enemy.hp > 0) {
-    if (participants[0] == player) {
-      fastMeleeAttack(participants[0], participants[1]);
-      participants = participants.reverse();
-    } else if (participants[0] != player) {
-      meleeAttack(participants[0], participants[1]);
-      participants = participants.reverse();
-    }
-  }
-
-  if (player.hp <= 0) {
-    text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
-    //todo: create a function for a new game
-  } else if (enemy.hp <= 0) {
-    text.innerText += `\n You have defeated the ${enemy.name}.`;
-    player.crowns += enemy.crowns;
-    loot(enemy);
-    resetBandit();
-    setUIInTravel();
-  }
-}
-
-function loot(enemy) {
-  player.inventory.push(...enemy.inventory);
-}
-
-function selectEnemyAction() {}
-
-function fastMeleeAttack(attacker, defender) {
-  meleeAttack(attacker, defender);
-  meleeAttack(attacker, defender);
-}
-
-function meleeAttack(attacker, defender) {
-  rollD10();
-  let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
-  console.log(`Attacker rolls ${attackResult}`);
-  rollD10();
-  let defendResult = defender.dodgeEscape + defender.reflexes + roll; //defenders are automatically dodging for now
-  console.log(`Defender rolls ${defendResult}`);
-
-  if (attackResult > defendResult) {
-    let bodyDamage = 0;
-    //let damage = rollD6() + rollD6() + 2 - defender.armor;
-
-    damage = calculateWeaponDamage(attacker) - defender.armor;
-    damage = Math.max(0, damage);
-    if (attacker.body > defender.body) {
-      bodyDamage = attacker.body - defender.body;
-      damage = damage + bodyDamage;
-    }
-    defender.armor -= 1;
-
-    if (defender.enemyType == "humanoid") {
-      let hitLocationRoll = rollD10();
-      hitLocation = humanDamageLocation[hitLocationRoll];
-
-      if (hitLocation == "Head") {
-        damage = damage * 3;
-      } else if (
-        hitLocation == "Right Arm" ||
-        "Left Arm" ||
-        "Right Leg" ||
-        "Left Leg"
-      ) {
-        damage = Math.floor(damage / 2);
-      }
-    }
-    defender.hp -= damage;
-    text.innerText += `\n${attacker.name} hits ${defender.name} in the ${hitLocation} for ${damage} damage!`;
-  } else {
-    text.innerText += `\n${attacker.name} attacks ${defender.name} but misses!`;
-  }
-  hpText.innerText = player.hp;
-  hitLocation = [];
-}
-
-function resetBandit() {
-  bandit.hp = 20;
-}
-
-function landscapeMessage() {
-  const landscapeMessages = [
-    "\nYou walk through a dense forest, the ancient trees towering above you like silent sentinels.",
-    "\nThe winding path leads you through a rugged mountain pass, the jagged peaks obscured by swirling mists.",
-    "\nA vast plain stretches out before you, the tall grass rustling in the breeze as you make your way across the open expanse.",
-    "\nYou follow a meandering river through a tranquil valley, the sound of rushing water soothing your weary soul.",
-    "\nThe road takes you through a desolate moorland, the bleak landscape stretching out in all directions under the grey sky.",
-    "\nA winding trail leads you through a mystical grove, where ethereal wisps dance among the ancient trees.",
-    "\nYou traverse a rocky coastline, the crashing waves sending salty spray into the air as you navigate the treacherous cliffs.",
-    "\nThe path winds through a sun-dappled forest, the chirping of birds and buzzing of insects filling the air with life.",
-    "\nYou stumble upon the ruins of an ancient fortress, its crumbling walls standing as a testament to the passage of time.",
-    "\nA sprawling meadow unfolds before you, dotted with vibrant wildflowers and buzzing with the hum of bees.",
-    "\nYou come across a hidden waterfall, its cascading waters shimmering in the sunlight as they tumble into a crystal-clear pool below.",
-    "\nA mysterious fog rolls in from the marshes, cloaking the landscape in an eerie silence as you tread cautiously through the mist.",
-    "\nYou journey through a serene woodland, the trees whispering ancient secrets as you pass by.",
-    "\nA towering mountain looms in the distance, its snow-capped peak disappearing into the clouds above.",
-    "\nYou stumble upon a forgotten graveyard, its weather-worn headstones standing as solemn markers of lives long past.",
-    "\nThe path leads you through a bustling marketplace, the scent of spices and the sounds of haggling merchants filling the air with energy.",
-    "\nYou come across a quaint village nestled in the hills, its thatched-roof cottages exuding a rustic charm.",
-    "\nA shimmering oasis appears on the horizon, its sparkling waters a welcome respite from the harsh desert sands.",
-    "\nYou journey through a dense swamp, the murky waters teeming with hidden dangers lurking just below the surface.",
-    "\nA majestic castle looms on the horizon, its towering spires reaching towards the heavens as you approach the imposing fortress.",
-    "\nYou stumble upon a hidden cave entrance, its dark depths beckoning you to explore the mysteries that lie within.",
-    "\nThe path leads you through a tranquil glade, where shafts of sunlight filter through the canopy above, casting dappled shadows on the forest floor.",
-    "\nYou come across a sprawling vineyard, its neatly-tended rows of grapevines stretching as far as the eye can see.",
-    "\nA mysterious stone circle stands before you, its weathered stones bearing ancient runes that hint at forgotten rituals and arcane powers.",
-    "\nYou journey through a windswept plain, the tall grass bending in the breeze as you make your way across the open expanse.",
-    "\nA towering waterfall cascades down the side of a sheer cliff, its thundering roar echoing through the canyon below.",
-    "\nYou stumble upon a hidden glen, its lush greenery providing a welcome respite from the harsh wilderness beyond.",
-    "\nThe path leads you through a dense thicket, where tangled underbrush and twisted vines make progress slow and arduous.",
-    "\nYou come across a sunken shipwreck, its rotting timbers a haunting reminder of the dangers that lurk beneath the waves.",
-    "\nA crumbling stone bridge spans a chasm before you, its ancient arches standing as a testament to the engineering prowess of long-forgotten civilizations.",
-    "\nYou journey through a windswept desert, the shifting sands forming intricate patterns beneath your feet as you trek across the barren landscape.",
-    "\nA towering statue looms on the horizon, its weathered features carved with a sense of solemn majesty that speaks to the passage of ages.",
-    "\nYou stumble upon a hidden glade, its tranquil beauty belying the dangers that lurk in the shadows of the surrounding forest.",
-    "\nThe path leads you through a mist-shrouded marsh, where twisted trees and tangled roots form a labyrinthine maze that seems to shift and change with every step.",
-    "\nYou come across a crumbling castle ruin, its ivy-covered walls standing as a silent testament to the once-great kingdom that now lies in ruin.",
-    "\nA mysterious standing stone marks the center of a forgotten clearing, its weathered surface adorned with intricate carvings that hint at a lost civilization.",
-    "\nYou journey through a moonlit forest, where the whispering of the wind through the trees and the hooting of owls create an atmosphere of eerie tranquility.",
-    "\nA towering mountain range stretches out before you, its snow-capped peaks disappearing into the clouds as you contemplate the journey ahead.",
-    "\nYou stumble upon a hidden cave entrance, its yawning maw beckoning you to explore the dark depths that lie beyond.",
-    "\nThe path leads you through a dense jungle, where towering trees and lush foliage form a verdant canopy overhead.",
-    "\nYou come across a secluded waterfall, its crystal-clear waters cascading down from a moss-covered cliff into a tranquil pool below.",
-    "\nA mysterious stone circle stands before you, its weathered stones bearing ancient runes that hint at forgotten rituals and arcane powers.",
-    "\nYou journey through a windswept plain, the tall grass bending in the breeze as you make your way across the open expanse.",
-    "\nA towering waterfall cascades down the side of a sheer cliff, its thundering roar echoing through the canyon below.",
-    "\nYou stumble upon a hidden glen, its lush greenery providing a welcome respite from the harsh wilderness beyond.",
-    "\nThe path leads you through a dense thicket, where tangled underbrush and twisted vines make progress slow and arduous.",
-    "\nYou come across a sunken shipwreck, its rotting timbers a haunting reminder of the dangers that lurk beneath the waves.",
-    "\nA crumbling stone bridge spans a chasm before you, its ancient arches standing as a testament to the engineering prowess of long-forgotten civilizations.",
-    "\nYou journey through a windswept desert, the shifting sands forming intricate patterns beneath your feet as you trek across the barren landscape.",
-    "\nA towering statue looms on the horizon, its weathered features carved with a sense of solemn majesty that speaks to the passage of ages.",
-    "\nYou stumble upon a hidden glade, its tranquil beauty belying the dangers that lurk in the shadows of the surrounding forest.",
-    "\nThe path leads you through a mist-shrouded marsh, where twisted trees and tangled roots form a labyrinthine maze that seems to shift and change with every step.",
-    "\nYou come across a crumbling castle ruin, its ivy-covered walls standing as a silent testament to the once-great kingdom that now lies in ruin.",
-  ];
-
-  const randomIndex = Math.floor(Math.random() * landscapeMessages.length);
-  const message = landscapeMessages[randomIndex];
-  text.innerText += message;
-}
-
-function equipWeapon(character) {
-  // Iterate through the character's inventory
-  for (let i = 0; i < character.inventory.length; i++) {
-    const item = character.inventory[i];
-    // Check if the item is a weapon
-    if (item instanceof Weapon) {
-      // Equip the weapon and exit the loop
-      character.equippedWeapon = item;
-      //text.innerText = `Equipped ${item.name}.`; this messaging can be included later
-      return;
-    }
-  }
-  // If no weapon is found, display a message
-  text.innerText = "No weapon found in inventory.";
-}
-
-function calculateWeaponDamage(character) {
-  damage = 0;
-  let damageArray = character.equippedWeapon.damage;
-  for (let i = 0; i < damageArray[0]; i++) {
-    damage += rollD6();
-  }
-  damage += damageArray[2];
-  console.log("damage is " + damage);
-  return damage;
-}
-
-function equipArmor(character) {
-  // equip all items of armor - needs to be adjusted later
-  for (let i = 0; i < character.inventory.length; i++) {
-    const item = character.inventory[i];
-    if (item instanceof Armor) {
-      character.equippedArmor.push(item);
-      //text.innerText = `Equipped ${item.name}.`; this messaging can be included later
-    }
-  }
-  // calculate equipped armor
-  for (let i = 0; i < character.equippedArmor.length; i++) {
-    character.armor += character.equippedArmor[i].stoppingPower;
-  }
-  return character.armor;
-}
