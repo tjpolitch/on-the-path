@@ -1280,6 +1280,16 @@ function startCombat(enemy) {
 
   console.log(participants);
 
+  fastStrikeButton.addEventListener("click", () => {
+    text.innerText += "\nYou slash at the enemy with two fast strikes.";
+    playerCombatOptions(1);
+  });
+
+  strongStrikeButton.addEventListener("click", () => {
+    text.innerText += "\nYou cleave at the enemy with one powerful strike.";
+    playerCombatOptions(2);
+  });
+
   while (player.hp > 0 && enemy.hp > 0) {
     if (participants[0] == player) {
       playerAction = prompt(
@@ -1305,6 +1315,14 @@ function startCombat(enemy) {
     defeat(enemy);
   } else if (enemy.hp <= 0) {
     victory(enemy);
+  }
+}
+
+function playerCombatOptions(action) {
+  if (action === 1) {
+    fastMeleeAttack(participants[0], participants[1]);
+  } else if (action === 2) {
+    meleeAttack(participants[0], participants[1], "strong");
   }
 }
 
