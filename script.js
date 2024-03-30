@@ -613,6 +613,8 @@ let damage = 0;
 let hitLocation = [];
 
 const attackButton = document.querySelector("#attackButton");
+const fastStrikeButton = document.querySelector("#fastStrikeButton");
+const strongStrikeButton = document.querySelector("#strongStrikeButton");
 const restButton = document.querySelector("#restButton");
 const forageButton = document.querySelector("#forageButton");
 const eatButton = document.querySelector("#eatButton");
@@ -1236,6 +1238,8 @@ function setUIInTravel() {
   negotiateButton.style.display = "none";
   fleeButton.style.display = "none";
   attackButton.style.display = "none";
+  fastStrikeButton.style.display = "none";
+  strongStrikeButton.style.display = "none";
 
   northButton.style.display = "inline";
   southButton.style.display = "inline";
@@ -1254,8 +1258,7 @@ function setUIInCombat() {
   text.innerText = "You stand your ground and prepare to fight.";
 }
 
-function startCombat(enemy) {
-  setUIInCombat();
+function setCombatInitiative(enemy) {
   let playerInitiative = rollD10() + player.reflexes;
   let enemyInitiative = rollD10() + enemy.reflexes;
 
@@ -1269,12 +1272,18 @@ function startCombat(enemy) {
   } else if (playerInitiative > enemyInitiative) {
     participants = [player, enemy];
   }
+}
+
+function startCombat(enemy) {
+  setUIInCombat();
+  setCombatInitiative(enemy);
 
   console.log(participants);
 
   while (player.hp > 0 && enemy.hp > 0) {
     if (participants[0] == player) {
       fastMeleeAttack(participants[0], participants[1]);
+      meleeAttack(participants[0], participants[1], "strong");
       participants = participants.reverse();
     } else if (participants[0] != player) {
       meleeAttack(participants[0], participants[1]);
@@ -1294,6 +1303,27 @@ function startCombat(enemy) {
   }
 }
 
+/*
+  while (player.hp > 0 && enemy.hp > 0) {
+    if (participants[0] == player) {
+      fastStrikeButton.style.display = "inline";
+      strongStrikeButton.style.display = "inline";
+
+      fastStrikeButton.addEventListener("click", function () {
+        fastMeleeAttack(participants[0], participants[1]);
+      });
+
+      strongStrikeButton.addEventListener("click", function () {
+        meleeAttack(participants[0], participants[1], "strong");
+      });
+
+      participants = participants.reverse();
+    } else if (participants[0] != player) {
+      meleeAttack(participants[0], participants[1]);
+      participants = participants.reverse();
+    }
+  }*/
+
 function loot(enemy) {
   player.inventory.push(...enemy.inventory);
 }
@@ -1305,9 +1335,14 @@ function fastMeleeAttack(attacker, defender) {
   meleeAttack(attacker, defender);
 }
 
-function meleeAttack(attacker, defender) {
+function meleeAttack(attacker, defender, attackType) {
   rollD10();
   let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
+
+  if ((attackType = "strong")) {
+    attackResult -= 3;
+  }
+
   console.log(`Attacker rolls ${attackResult}`);
   rollD10();
   let defendResult = defender.dodgeEscape + defender.reflexes + roll; //defenders are automatically dodging for now
@@ -1315,8 +1350,6 @@ function meleeAttack(attacker, defender) {
 
   if (attackResult > defendResult) {
     let bodyDamage = 0;
-    //let damage = rollD6() + rollD6() + 2 - defender.armor;
-
     damage = calculateWeaponDamage(attacker) - defender.armor;
     damage = Math.max(0, damage);
     if (attacker.body > defender.body) {
@@ -1324,6 +1357,10 @@ function meleeAttack(attacker, defender) {
       damage = damage + bodyDamage;
     }
     defender.armor -= 1;
+
+    if ((attackType = "strong")) {
+      damage = damage * 2;
+    }
 
     if (defender.enemyType == "humanoid") {
       let hitLocationRoll = roll10();
@@ -1340,6 +1377,7 @@ function meleeAttack(attacker, defender) {
         damage = Math.floor(damage / 2);
       }
     }
+
     defender.hp -= damage;
     text.innerText += `\n${attacker.name} hits ${defender.name} in the ${hitLocation} for ${damage} damage!`;
   } else {
