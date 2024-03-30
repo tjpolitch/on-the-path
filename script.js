@@ -1253,7 +1253,9 @@ function setUIInTravel() {
 }
 
 function setUIInCombat() {
-  attackButton.style.display = "inline";
+  //attackButton.style.display = "inline";
+  fastStrikeButton.style.display = "inline";
+  strongStrikeButton.style.display = "inline";
   fightButton.style.display = "none";
   text.innerText = "You stand your ground and prepare to fight.";
 }
@@ -1283,38 +1285,24 @@ function startCombat(enemy) {
   fastStrikeButton.addEventListener("click", () => {
     text.innerText += "\nYou slash at the enemy with two fast strikes.";
     playerCombatOptions(1);
+    enemyCombatTurn(); // After player's turn, enemy takes its turn
   });
 
   strongStrikeButton.addEventListener("click", () => {
     text.innerText += "\nYou cleave at the enemy with one powerful strike.";
     playerCombatOptions(2);
+    enemyCombatTurn(); // After player's turn, enemy takes its turn
   });
 
-  while (player.hp > 0 && enemy.hp > 0) {
-    if (participants[0] == player) {
-      playerAction = prompt(
-        "Choose your action: (1) Fast Strike Attack, (2) Strong Strike Attack"
-      );
-      if (playerAction === "1") {
-        text.innerText += "\nYou slash at the enemy with two fast strikes.";
-        fastMeleeAttack(participants[0], participants[1]);
-      } else if (playerAction === "2") {
-        text.innerText += "\nYou cleave at the enemy with one powerful strike.";
-        meleeAttack(participants[0], participants[1], "strong");
-      } else {
-        text.innerText += "\nInvalid action. Skipping turn.";
-      }
-      participants = participants.reverse();
-    } else if (participants[0] != player) {
+  function enemyCombatTurn() {
+    if (player.hp > 0 && enemy.hp > 0) {
       meleeAttack(participants[0], participants[1]);
-      participants = participants.reverse();
+      if (player.hp <= 0) {
+        defeat(enemy);
+      } else if (enemy.hp <= 0) {
+        victory(enemy);
+      }
     }
-  }
-
-  if (player.hp <= 0) {
-    defeat(enemy);
-  } else if (enemy.hp <= 0) {
-    victory(enemy);
   }
 }
 
