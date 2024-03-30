@@ -1113,6 +1113,7 @@ function rollD10() {
     } else if (roll === 1) {
       console.log("Dice exploded on 1, rolling again...");
       let nextRoll = Math.floor(Math.random() * 10) + 1;
+      totalRoll -= 1;
       console.log("Next roll is " + nextRoll);
       totalRoll -= nextRoll;
       if (nextRoll === 10) {
@@ -1197,7 +1198,7 @@ function createEncounter() {
 }
 
 function rollEncounter() {
-  rollD10();
+  roll10();
   if (roll == 1) {
     createEncounter();
   }
