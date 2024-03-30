@@ -1282,8 +1282,18 @@ function startCombat(enemy) {
 
   while (player.hp > 0 && enemy.hp > 0) {
     if (participants[0] == player) {
-      fastMeleeAttack(participants[0], participants[1]);
-      meleeAttack(participants[0], participants[1], "strong");
+      playerAction = prompt(
+        "Choose your action: (1) Fast Strike Attack, (2) Strong Strike Attack"
+      );
+      if (playerAction === "1") {
+        text.innerText += "\nYou slash at the enemy with two fast strikes.";
+        fastMeleeAttack(participants[0], participants[1]);
+      } else if (playerAction === "2") {
+        text.innerText += "\nYou cleave at the enemy with one powerful strike.";
+        meleeAttack(participants[0], participants[1], "strong");
+      } else {
+        text.innerText += "\nInvalid action. Skipping turn.";
+      }
       participants = participants.reverse();
     } else if (participants[0] != player) {
       meleeAttack(participants[0], participants[1]);
@@ -1292,43 +1302,32 @@ function startCombat(enemy) {
   }
 
   if (player.hp <= 0) {
-    text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
-    //todo: create a function for a new game
+    defeat(enemy);
   } else if (enemy.hp <= 0) {
-    text.innerText += `\n You have defeated the ${enemy.name}.`;
-    player.crowns += enemy.crowns;
-    loot(enemy);
-    resetBandit();
-    setUIInTravel();
+    victory(enemy);
   }
 }
 
-/*
-  while (player.hp > 0 && enemy.hp > 0) {
-    if (participants[0] == player) {
-      fastStrikeButton.style.display = "inline";
-      strongStrikeButton.style.display = "inline";
+function combatRound() {}
 
-      fastStrikeButton.addEventListener("click", function () {
-        fastMeleeAttack(participants[0], participants[1]);
-      });
+function defeat(enemy) {
+  text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
+  //todo: create a function for a new game
+}
 
-      strongStrikeButton.addEventListener("click", function () {
-        meleeAttack(participants[0], participants[1], "strong");
-      });
-
-      participants = participants.reverse();
-    } else if (participants[0] != player) {
-      meleeAttack(participants[0], participants[1]);
-      participants = participants.reverse();
-    }
-  }*/
+function victory(enemy) {
+  text.innerText += `\n You have defeated the ${enemy.name}.`;
+  player.crowns += enemy.crowns;
+  loot(enemy);
+  resetBandit();
+  setUIInTravel();
+}
 
 function loot(enemy) {
   player.inventory.push(...enemy.inventory);
 }
 
-function selectEnemyAction() {}
+//function selectEnemyAction() {}
 
 function fastMeleeAttack(attacker, defender) {
   meleeAttack(attacker, defender);
