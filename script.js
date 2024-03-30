@@ -162,6 +162,7 @@ const ironLongSword = new Weapon(
 class Character {
   constructor(
     player,
+    enemyType,
     name,
     intellect,
     empathy,
@@ -243,6 +244,7 @@ class Character {
     hungry
   ) {
     this.player = player;
+    this.enemyType = enemyType;
     this.name = name;
     this.intellect = intellect;
     this.empathy = empathy;
@@ -488,7 +490,8 @@ let bandit = new Enemy(
 
 const player = new Character(
   true,
-  "Hendrik",
+  "humanoid", // enemyType
+  "Hendrik", // Name of character
   5, // intellect
   7, // empathy
   6, // reflexes
@@ -1124,7 +1127,6 @@ function rollD10() {
       totalRoll += roll;
     }
   } while (roll === 10 || roll === 1);
-
   console.log("Total:" + totalRoll);
   roll = totalRoll;
   return roll;
@@ -1633,7 +1635,8 @@ player.inventory.push(verdenArchersHood);
 player.inventory.push(gambeson);
 player.inventory.push(paddedTrousers);
 bandit.inventory.push(paddedTrousers);
-bandit.inventory.push(dagger);
+//bandit.inventory.push(dagger);
+bandit.inventory.push(ironLongSword);
 bandit.inventory.push(aedirnianGambeson);
 equipArmor(bandit);
 equipWeapon(player);
