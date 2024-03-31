@@ -1273,6 +1273,7 @@ function setCombatInitiative(enemy) {
     participants = [enemy, player];
   } else if (playerInitiative > enemyInitiative) {
     participants = [player, enemy];
+    playerTurnInProgress = true;
   }
 }
 
@@ -1304,10 +1305,7 @@ function startCombat(enemy) {
 }
 
 function enemyCombatTurn(enemy) {
-  // Simulate enemy's attack (replace with actual logic)
-  if (player.hp > 0 && enemy.hp > 0) {
-    meleeAttack(participants[0], participants[1]);
-  }
+  meleeAttack(participants[0], participants[1]);
 }
 
 function checkCombatFinish(enemy) {
@@ -1327,15 +1325,6 @@ function playerCombatOptions(action) {
     meleeAttack(participants[0], participants[1], "strong");
   }
 }
-
-/*function combatRound(enemy) {
-  if (participants[0] == enemy) {
-    enemyCombatTurn(enemy);
-  } else {
-    playerCombatTurn(enemy);
-  }
-  checkCombatFinish(enemy);
-}*/
 
 function defeat(enemy) {
   text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
@@ -1372,7 +1361,7 @@ function meleeAttack(attacker, defender, attackType) {
   rollD10();
   let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
 
-  if ((attackType = "strong")) {
+  if (attackType === "strong") {
     attackResult -= 3;
   }
 
