@@ -1358,7 +1358,9 @@ function loot(enemy) {
 
 function fastMeleeAttack(attacker, defender) {
   meleeAttack(attacker, defender);
-  meleeAttack(attacker, defender);
+  if (defender.hp > 0) {
+    meleeAttack(attacker, defender);
+  }
 }
 
 function nextCombatant() {
