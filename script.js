@@ -1110,26 +1110,26 @@ function rollD10() {
   let totalRoll = 0;
   do {
     roll = Math.floor(Math.random() * 10) + 1;
-    console.log("Rolled:" + roll);
+    //console.log("Rolled:" + roll);
 
     if (roll === 10) {
       totalRoll += roll;
-      console.log("Dice exploded on 10, rolling again...");
+      //console.log("Dice exploded on 10, rolling again...");
     } else if (roll === 1) {
-      console.log("Dice exploded on 1, rolling again...");
+      //console.log("Dice exploded on 1, rolling again...");
       let nextRoll = Math.floor(Math.random() * 10) + 1;
       totalRoll -= 1;
-      console.log("Next roll is " + nextRoll);
+      //console.log("Next roll is " + nextRoll);
       totalRoll -= nextRoll;
       if (nextRoll === 10) {
-        console.log("Dice exploded on 10, rolling again...");
+        //console.log("Dice exploded on 10, rolling again...");
         totalRoll -= nextRoll;
       }
     } else {
       totalRoll += roll;
     }
   } while (roll === 10 || roll === 1);
-  console.log("Total:" + totalRoll);
+  //console.log("Total:" + totalRoll);
   roll = totalRoll;
   return roll;
 }
@@ -1286,6 +1286,13 @@ function startCombat(enemy) {
   fastStrikeButton.style.display = "inline";
   strongStrikeButton.style.display = "inline";
 
+  //Resolve enemy action if they have the first turn
+  if (participants[0] === enemy) {
+    enemyCombatTurn(enemy);
+    playerTurnInProgress = true;
+    checkCombatFinish(enemy); //Proceed to player's turn
+  }
+
   // Add event listeners for player's combat choices
   fastStrikeButton.addEventListener("click", () => {
     text.innerText += "\nYou slash at the enemy with two fast strikes.";
@@ -1293,6 +1300,7 @@ function startCombat(enemy) {
     playerTurnInProgress = false; // Set the player's turn to be finished
     checkCombatFinish(enemy);
     enemyCombatTurn(enemy); // Proceed to enemy's turn
+    checkCombatFinish(enemy); //Proceed to player's turn
   });
 
   strongStrikeButton.addEventListener("click", () => {
@@ -1301,6 +1309,7 @@ function startCombat(enemy) {
     playerTurnInProgress = false; // Set the player's turn to be finished
     checkCombatFinish(enemy);
     enemyCombatTurn(enemy); // Proceed to enemy's turn
+    checkCombatFinish(enemy); //Proceed to player's turn
   });
 }
 
