@@ -1252,10 +1252,10 @@ function setUIInTravel() {
   stayButton.style.display = "inline";
 }
 
+let playerTurnInProgress = false;
+
 function setUIInCombat() {
   //attackButton.style.display = "inline";
-  fastStrikeButton.style.display = "inline";
-  strongStrikeButton.style.display = "inline";
   fightButton.style.display = "none";
   text.innerText = "You stand your ground and prepare to fight.";
 }
@@ -1279,30 +1279,44 @@ function setCombatInitiative(enemy) {
 function startCombat(enemy) {
   setUIInCombat();
   setCombatInitiative(enemy);
-
   console.log(participants);
 
+  // Display UI for player's combat choices
+  fastStrikeButton.style.display = "inline";
+  strongStrikeButton.style.display = "inline";
+
+  // Add event listeners for player's combat choices
   fastStrikeButton.addEventListener("click", () => {
     text.innerText += "\nYou slash at the enemy with two fast strikes.";
     playerCombatOptions(1);
-    enemyCombatTurn(); // After player's turn, enemy takes its turn
+    playerTurnInProgress = false; // Set the player's turn to be finished
+    checkCombatFinish(enemy);
+    enemyCombatTurn(enemy); // Proceed to enemy's turn
   });
 
   strongStrikeButton.addEventListener("click", () => {
     text.innerText += "\nYou cleave at the enemy with one powerful strike.";
     playerCombatOptions(2);
-    enemyCombatTurn(); // After player's turn, enemy takes its turn
+    playerTurnInProgress = false; // Set the player's turn to be finished
+    checkCombatFinish(enemy);
+    enemyCombatTurn(enemy); // Proceed to enemy's turn
   });
+}
 
-  function enemyCombatTurn() {
-    if (player.hp > 0 && enemy.hp > 0) {
-      meleeAttack(participants[0], participants[1]);
-      if (player.hp <= 0) {
-        defeat(enemy);
-      } else if (enemy.hp <= 0) {
-        victory(enemy);
-      }
-    }
+function enemyCombatTurn(enemy) {
+  // Simulate enemy's attack (replace with actual logic)
+  if (player.hp > 0 && enemy.hp > 0) {
+    meleeAttack(participants[0], participants[1]);
+  }
+}
+
+function checkCombatFinish(enemy) {
+  if (player.hp <= 0) {
+    defeat(enemy);
+  } else if (enemy.hp <= 0) {
+    victory(enemy);
+  } else {
+    nextCombatant();
   }
 }
 
@@ -1314,7 +1328,14 @@ function playerCombatOptions(action) {
   }
 }
 
-function combatRound() {}
+/*function combatRound(enemy) {
+  if (participants[0] == enemy) {
+    enemyCombatTurn(enemy);
+  } else {
+    playerCombatTurn(enemy);
+  }
+  checkCombatFinish(enemy);
+}*/
 
 function defeat(enemy) {
   text.innerText += `\n You have been defeated by the ${enemy.name}! Game over.`;
@@ -1338,6 +1359,11 @@ function loot(enemy) {
 function fastMeleeAttack(attacker, defender) {
   meleeAttack(attacker, defender);
   meleeAttack(attacker, defender);
+}
+
+function nextCombatant() {
+  let nextCombatant = participants.pop();
+  participants.unshift(nextCombatant);
 }
 
 function meleeAttack(attacker, defender, attackType) {
