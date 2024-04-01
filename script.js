@@ -611,6 +611,7 @@ let timeSinceEating = 0;
 let participants = [];
 let damage = 0;
 let hitLocation = [];
+let playerTurnInProgress = false;
 
 const attackButton = document.querySelector("#attackButton");
 const fastStrikeButton = document.querySelector("#fastStrikeButton");
@@ -797,18 +798,10 @@ const moonList = [
   "waxing gibbous",
 ];
 
-// const testMap = [
-//   [3, 1, 0, 0, 0],
-//   [3, 1, 1, 0, 0],
-//   [3, 1, 1, 0, 0],
-//   [3, 1, 2, 2, 2],
-//   [3, 1, 2, 2, 2],
-// ];
-
 const terrainTypes = ["forest", "plains", "hills", "mountains", "swamp"];
-
 const terrainProbabilities = [0.3, 0.3, 0.2, 0.1, 0.1];
 
+//Sets the UI for the start of the game
 setUIInTravel();
 
 //copied from chatgpt
@@ -853,6 +846,7 @@ const mapHeight = testMap.length;
 
 //--------------------------------------------------------------------------------------------
 
+//Set time forward by a specified amount, otherwise 60 minutes is the default setting. Also checks for player hunger and stamina
 function forwardTime(minutesIncrimented = 60) {
   time = time + minutesIncrimented;
   timeSinceEating += minutesIncrimented;
@@ -862,7 +856,6 @@ function forwardTime(minutesIncrimented = 60) {
     date.setDate(date.getDate() + 1);
     forwardMoonDay();
     player.rested = false;
-    console.log("rested: " + player.rested);
   }
 
   for (let i = minutesIncrimented; i > 0; i -= 10) {
@@ -871,6 +864,7 @@ function forwardTime(minutesIncrimented = 60) {
 
   if (timeSinceEating > 720) {
     player.hungry = true;
+    text.innerText += `Your stomach begins to growl...`;
   }
 
   if (player.hungry == true && player.stamina <= 0) {
@@ -884,6 +878,7 @@ function forwardTime(minutesIncrimented = 60) {
   return time;
 }
 
+//A dayPart refers to a section of the day and is used for telling temp and light
 function convertTimeToDayPart(t) {
   let x = dayPart;
 
@@ -911,6 +906,7 @@ function convertTimeToDayPart(t) {
   return dayPart;
 }
 
+//Forwards time as well as calling all other time and weather related functions and redisplaying player stats
 function tellTime(t) {
   forwardTime(t);
   convertTimeToDayPart(time);
@@ -922,6 +918,7 @@ function tellTime(t) {
   timeText.innerText = timeList[dayPart];
 }
 
+//Moon day is the day of the lunar cycle
 function forwardMoonDay() {
   if (moonDay <= 28) {
     moonDay++;
@@ -931,6 +928,7 @@ function forwardMoonDay() {
   console.log("moonDay: " + moonDay);
 }
 
+//Display the current phase of the lunar cycle
 function tellMoon() {
   if (moonDay === 1) {
     todayMoon = 0;
@@ -952,11 +950,13 @@ function tellMoon() {
   moonText.innerText = moonList[todayMoon];
 }
 
+//Check light levels depending on the month and day part e.g.
 function tellLight(month, dayPart) {
   let lightLevel = lightModifiers[month][dayPart];
   lightText.innerText = lightList[lightLevel];
 }
 
+//Tell the generate temp based on the temperature e.g. cool rather than 12 degrees
 function tellTemp() {
   if (temp < 1) {
     weather = tempList[0];
@@ -977,6 +977,7 @@ function tellTemp() {
   console.log("temp: " + temp);
 }
 
+//Generate a pseudorandom temperature based on polish weather for the day, time, and month
 function generateTemp(month, dayPart) {
   let sigma = 5;
   let mu = tempModifiers[month][dayPart];
@@ -987,6 +988,7 @@ function generateTemp(month, dayPart) {
   return temp;
 }
 
+//Resets UI and moves time forward based on travelling. Calls rollEncounter to see if there is an enemy
 function travel() {
   let sigma = 15;
   let mu = 60;
@@ -997,15 +999,17 @@ function travel() {
   console.log("added time: " + addedTime);
   setTerrain();
   spendStamina(player, 1);
-  rollEncounter();
+  rollEncounter(); //Todo - check if this is an extra calling of this function
   return addedTime;
 }
 
+//Provides terrain information
 function setTerrain() {
   currentTerrain = testMap[xCoordinate][yCoordinate];
   terrainText.innerText = terrainTypes[currentTerrain];
 }
 
+//Lets the player know if they have reached the edge of the map
 function terrainBounds() {
   text.innerText = "You have reached impassable terrain.";
 }
@@ -1040,21 +1044,6 @@ function forage() {
   setEncumbrance();
 }
 
-forageButton.addEventListener("click", function () {
-  forage();
-  console.log("found items: " + foundItems[0]);
-  console.log(JSON.stringify(foundItems));
-
-  if (foundItems.length > 0) {
-    player.inventory.push(...foundItems);
-    displayFoundItems();
-  }
-  player.inventory.sort();
-  foundItems = [];
-  console.log("inventory is: " + player.inventory[0]);
-  setEncumbrance();
-});
-
 // Function to display found items
 function displayFoundItems() {
   let foundText = "You found the following items while foraging:";
@@ -1078,6 +1067,7 @@ function skillCheckDC(skill, dc) {
   return passed;
 }
 
+//Roll a skill check for two characters to oppose eachother
 function skillCheckOpposed(playerSkill, playerStat, enemySkill, enemyStat) {
   rollD10();
   let playerResult = playerSkill + playerStat + roll;
@@ -1134,29 +1124,34 @@ function rollD10() {
   return roll;
 }
 
+//Roll a six sided dice and return the roll result
 function rollD6() {
   roll = Math.floor(Math.random() * 6) + 1;
   console.log(roll);
   return roll;
 }
 
+//Calculates random amount of time spent for an action (within an hour)
 function calculateTimeSpent() {
   timeSpent = Math.floor(Math.random() * 60) + 1;
 }
 
+//Resets the UI to tell current player stats
 function tellStats(x) {
   xpText.innerText = x.xp;
   hpText.innerText = x.hp;
   staminaText.innerText = x.stamina;
 }
 
+//Reduce player stamina. To be used during actions. todo: add this to all physical actions such as combat
 function spendStamina(x, y) {
   x.stamina = x.stamina - (Math.floor(Math.random() * y) + 1);
 }
 
+// Enables the player to eat one item in their inventory that is edible
 function eat(x) {
   let eatenItem;
-  //will rejig this later to eat specific items
+  //todo: adjust this later to eat specific items
   for (let i = 0; i < x.length; i++) {
     if (x[i].edible == true) {
       eatenItem = x[i].name;
@@ -1166,6 +1161,7 @@ function eat(x) {
     }
   }
 
+  //Provides positive benefits if a player eats. Also sets encumbrance for eaten items and remove hunger
   if (eatenItem) {
     setEncumbrance();
     player.stamina += 30;
@@ -1178,6 +1174,7 @@ function eat(x) {
   }
 }
 
+// Weigh all items in a players inventory
 function weighInventory() {
   inventoryWeight = 0;
   for (let i = 0; i < player.inventory.length; i++) {
@@ -1186,6 +1183,7 @@ function weighInventory() {
   inventoryWeightText.innerText = inventoryWeight.toFixed(1);
 }
 
+// Tells player if their inventory weight is over their encumbrance allowance. todo: drop player speed if they are overencumbered
 function setEncumbrance() {
   weighInventory();
   encumbranceStatText.innerText = player.encumbrance;
@@ -1195,12 +1193,14 @@ function setEncumbrance() {
   }
 }
 
+//todo: expand on this to include various enemies and non-combat encounters
 function createEncounter() {
   //need to include  generation of an enemy here
 
   setUIInEncounter();
 }
 
+//Creates a one in ten chance of an enemy encounter.
 function rollEncounter() {
   roll10();
   if (roll == 1) {
@@ -1208,6 +1208,7 @@ function rollEncounter() {
   }
 }
 
+//Prepares UI for enocounters e.g. encountering an enemy
 function setUIInEncounter() {
   text.innerText +=
     "\nAs you wander through the forest, you encounter a bandit blocking your path.";
@@ -1230,6 +1231,7 @@ function setUIInEncounter() {
   stayButton.style.display = "none";
 }
 
+//Prepares UI for travelling
 function setUIInTravel() {
   restButton.style.display = "inline";
   forageButton.style.display = "inline";
@@ -1252,14 +1254,13 @@ function setUIInTravel() {
   stayButton.style.display = "inline";
 }
 
-let playerTurnInProgress = false;
-
+//Prepares UI for combat
 function setUIInCombat() {
-  //attackButton.style.display = "inline";
   fightButton.style.display = "none";
   text.innerText = "You stand your ground and prepare to fight.";
 }
 
+//Calculates the initiative of combatants and adds them to an array of participants
 function setCombatInitiative(enemy) {
   let playerInitiative = rollD10() + player.reflexes;
   let enemyInitiative = rollD10() + enemy.reflexes;
@@ -1271,6 +1272,7 @@ function setCombatInitiative(enemy) {
 
   if (enemyInitiative > playerInitiative) {
     participants = [enemy, player];
+    playerTurnInProgress = false;
   } else if (playerInitiative > enemyInitiative) {
     participants = [player, enemy];
     playerTurnInProgress = true;
@@ -1282,7 +1284,7 @@ function startCombat(enemy) {
   setCombatInitiative(enemy);
   console.log(participants);
 
-  // Display UI for player's combat choices
+  // Display UI for player combat choices
   fastStrikeButton.style.display = "inline";
   strongStrikeButton.style.display = "inline";
 
@@ -1293,6 +1295,7 @@ function startCombat(enemy) {
     checkCombatFinish(enemy); //Proceed to player's turn
   }
 
+  // Todo: Combine some of the event listener functions into one bigger function for reusability. This will be more important when I include more combat choices.
   // Add event listeners for player's combat choices
   fastStrikeButton.addEventListener("click", () => {
     text.innerText += "\nYou slash at the enemy with two fast strikes.";
@@ -1313,10 +1316,13 @@ function startCombat(enemy) {
   });
 }
 
+//Performs a melee attack for the enemy
+//todo: This needs to be expanded upon for various combat options including other attack types, the enemy trying to flee, hide, etc
 function enemyCombatTurn(enemy) {
   meleeAttack(participants[0], participants[1]);
 }
 
+//Checks whether either player has 0 or less hp and creates a defeat or victory condition if one combatant does
 function checkCombatFinish(enemy) {
   if (player.hp <= 0) {
     defeat(enemy);
@@ -1327,6 +1333,7 @@ function checkCombatFinish(enemy) {
   }
 }
 
+//Create an input option for the player to choose fast or strong strikes when performing a melee attack
 function playerCombatOptions(action) {
   if (action === 1) {
     fastMeleeAttack(participants[0], participants[1]);
@@ -1340,20 +1347,21 @@ function defeat(enemy) {
   //todo: create a function for a new game
 }
 
+//Resets the game after combat including UI and resetting the bandit (although this will be removed at a later stage)
 function victory(enemy) {
   text.innerText += `\n You have defeated the ${enemy.name}.`;
-  player.crowns += enemy.crowns;
   loot(enemy);
   resetBandit();
   setUIInTravel();
 }
 
+//Pushed the entire inventory and crowns of a defeated enemy into the players inventory
 function loot(enemy) {
   player.inventory.push(...enemy.inventory);
+  player.crowns += enemy.crowns;
 }
 
-//function selectEnemyAction() {}
-
+//Fast strike used only as an option for players
 function fastMeleeAttack(attacker, defender) {
   meleeAttack(attacker, defender);
   if (defender.hp > 0) {
@@ -1361,11 +1369,13 @@ function fastMeleeAttack(attacker, defender) {
   }
 }
 
+//Takes the last array item in the participants list and sets it as the first. This is used for creating turns in combat
 function nextCombatant() {
   let nextCombatant = participants.pop();
   participants.unshift(nextCombatant);
 }
 
+//TODO: This meleeAttack function needs to be broken up into smaller functions
 function meleeAttack(attacker, defender, attackType) {
   rollD10();
   let attackResult = attacker.swordsmanship + attacker.reflexes + roll;
@@ -1418,10 +1428,12 @@ function meleeAttack(attacker, defender, attackType) {
   hitLocation = [];
 }
 
+//Temporary function to rest bandit health. Later I will need to create a function that creates new enemy instances
 function resetBandit() {
   bandit.hp = 20;
 }
 
+// Sets a weapon in the inventory of a character as the current equipped weapon. TODO: Need to adjust this so that the player can choose what weapon to equip, probably in another function.
 function equipWeapon(character) {
   // Iterate through the character's inventory
   for (let i = 0; i < character.inventory.length; i++) {
@@ -1438,6 +1450,7 @@ function equipWeapon(character) {
   text.innerText = "No weapon found in inventory.";
 }
 
+//Calculates the amount of damaage that a weapon produces during an attack. Each weapon contains a damage array that represents the number of dice rolled, what side they are, and how much bonus damage to include e.g. iron long sword is 2d6+2 with the relevant damageArray of [2,6,2]
 function calculateWeaponDamage(character) {
   damage = 0;
   let damageArray = character.equippedWeapon.damage;
@@ -1449,6 +1462,7 @@ function calculateWeaponDamage(character) {
   return damage;
 }
 
+//Sets an armor item in the inventory of a character to it's equipped armor slot and adjust the character's stopping power
 function equipArmor(character) {
   // equip all items of armor - needs to be adjusted later
   for (let i = 0; i < character.inventory.length; i++) {
@@ -1465,6 +1479,7 @@ function equipArmor(character) {
   return character.armor;
 }
 
+// Creates a pseudorandom landscape message. Called when a player is travelling to a new area
 function landscapeMessage() {
   const landscapeMessages = [
     "\nYou walk through a dense forest, the ancient trees towering above you like silent sentinels.",
@@ -1529,10 +1544,12 @@ function landscapeMessage() {
 
 //EVENT LISTENERS-----------------------------------------------------------------
 
+// Button to start a combat
 fightButton.addEventListener("click", function () {
   startCombat(bandit);
 });
 
+// Button to escape from a combat. Includes an opposed skillCheck
 fleeButton.addEventListener("click", function () {
   skillCheckOpposed(
     player.dodgeEscape,
@@ -1548,6 +1565,7 @@ fleeButton.addEventListener("click", function () {
   }
 });
 
+// Button to rest player whilst moving time forward and increasing stamina. Includes a random rest message
 restButton.addEventListener("click", function () {
   tellTime(240);
   player.stamina += 40;
@@ -1555,25 +1573,25 @@ restButton.addEventListener("click", function () {
   player.rested = true;
 
   const randomIndex = Math.floor(Math.random() * restMessages.length);
-  const message = restMessages[randomIndex];
-
-  text.innerText = message;
+  text.innerText = restMessages[randomIndex];
 });
 
+// Button to travel north.
 northButton.addEventListener("click", function () {
   if (yCoordinate > 0) {
     yCoordinate--;
-    travel();
-    tellTime(addedTime);
-    tellTemp();
+    travel(); //Calculates added time for travel
+    tellTime(addedTime); //Moves time forward for travel
+    tellTemp(); //Rechecks the temperature according to the new time
     text.innerText = `You travel to the north.`;
-    landscapeMessage();
-    rollEncounter();
+    landscapeMessage(); //Includes a random message about the landscape
+    rollEncounter(); //Checks for any emeies in the area and starts an encounter if there is
   } else {
-    terrainBounds();
+    terrainBounds(); //Stops the player from exiting the map area
   }
 });
 
+// Button to travel south
 southButton.addEventListener("click", function () {
   if (yCoordinate < mapHeight - 1) {
     yCoordinate++;
@@ -1588,6 +1606,7 @@ southButton.addEventListener("click", function () {
   }
 });
 
+// Button to travel east
 eastButton.addEventListener("click", function () {
   if (xCoordinate < mapWidth - 1) {
     xCoordinate++;
@@ -1602,6 +1621,7 @@ eastButton.addEventListener("click", function () {
   }
 });
 
+// Button to travel west
 westButton.addEventListener("click", function () {
   if (xCoordinate > 0) {
     xCoordinate--;
@@ -1616,6 +1636,7 @@ westButton.addEventListener("click", function () {
   }
 });
 
+// Button to travel south west
 southWestButton.addEventListener("click", function () {
   if (yCoordinate < mapHeight - 1 && xCoordinate > 0) {
     yCoordinate++;
@@ -1631,6 +1652,7 @@ southWestButton.addEventListener("click", function () {
   }
 });
 
+// Button to travel south east
 southEastButton.addEventListener("click", function () {
   if (yCoordinate < mapHeight - 1 && xCoordinate < mapWidth - 1) {
     yCoordinate++;
@@ -1646,6 +1668,7 @@ southEastButton.addEventListener("click", function () {
   }
 });
 
+// Button to travel north west
 northWestButton.addEventListener("click", function () {
   if (yCoordinate > 0 && xCoordinate > 0) {
     yCoordinate--;
@@ -1661,6 +1684,7 @@ northWestButton.addEventListener("click", function () {
   }
 });
 
+// Button to travel north east
 northEastButton.addEventListener("click", function () {
   if (yCoordinate > 0 && xCoordinate < mapWidth - 1) {
     yCoordinate--;
@@ -1675,8 +1699,10 @@ northEastButton.addEventListener("click", function () {
   }
 });
 
+// TODO button to
 negotiateButton.addEventListener("click", function () {});
 
+// Button to display contents of inventory
 inventoryButton.addEventListener("click", function () {
   player.inventory.sort((a, b) => {
     return a.name.localeCompare(b.name);
@@ -1689,11 +1715,28 @@ inventoryButton.addEventListener("click", function () {
   text.innerText = inventoryText;
 });
 
+// Button for the player to eat one item in inventory
 eatButton.addEventListener("click", function () {
   if (player.inventory.length > 0) {
     eat(player.inventory);
   }
   staminaText.innerText = player.stamina;
+});
+
+// Button for the player to perform a forage action in the wild. It also adds found items to the inventory and resets encumbrance
+forageButton.addEventListener("click", function () {
+  forage();
+  console.log("found items: " + foundItems[0]);
+  console.log(JSON.stringify(foundItems));
+
+  if (foundItems.length > 0) {
+    player.inventory.push(...foundItems);
+    displayFoundItems();
+  }
+  player.inventory.sort();
+  foundItems = [];
+  console.log("inventory is: " + player.inventory[0]);
+  setEncumbrance();
 });
 
 //CONFIGURATION FOR TESTING -----------------
