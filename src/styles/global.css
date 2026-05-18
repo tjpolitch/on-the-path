@@ -1,0 +1,200 @@
+:root {
+  --bg-0: #1a1612;
+  --bg-1: #221d18;
+  --bg-2: #2c2620;
+  --bg-3: #3a312a;
+  --ink: #e8dec6;
+  --ink-dim: #b7a98a;
+  --ink-faint: #7a6e58;
+  --accent: #c97f3a;
+  --accent-soft: #8a5828;
+  --danger: #c14a3a;
+  --danger-soft: #5e2218;
+  --success: #6a8a4a;
+  --magic: #5a6fa8;
+  --border: #4a3f33;
+  --font-display: "Cinzel", "Trajan Pro", "Cormorant Garamond", Georgia, serif;
+  --font-body: "Lora", "Garamond", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg-0);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+body {
+  background:
+    radial-gradient(circle at top, rgba(201, 127, 58, 0.05), transparent 60%),
+    var(--bg-0);
+}
+
+button {
+  background: var(--bg-2);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--bg-3);
+  border-color: var(--accent-soft);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--accent);
+}
+
+button.danger {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+input,
+select {
+  background: var(--bg-1);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin: 0 0 0.5em 0;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+a {
+  color: var(--accent);
+}
+
+.muted {
+  color: var(--ink-dim);
+}
+
+.faint {
+  color: var(--ink-faint);
+}
+
+.panel {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  padding: 12px;
+}
+
+.panel h3 {
+  margin-top: 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.stat-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  font-size: 13px;
+}
+
+.stat-line .label {
+  color: var(--ink-dim);
+}
+
+.stat-line .value {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.bar {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.bar > .fill {
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.bar.hp > .fill {
+  background: var(--danger);
+}
+
+.bar.stamina > .fill {
+  background: var(--success);
+}
+
+.bar.xp > .fill {
+  background: var(--magic);
+}
+
+.scrollable {
+  overflow-y: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background: var(--bg-0);
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: var(--border);
+}

@@ -1,0 +1,535 @@
+/* ─── App root ─────────────────────────────────────────────────────────── */
+.app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Title screen ─────────────────────────────────────────────────────── */
+.title-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.title-inner {
+  max-width: 720px;
+  width: 100%;
+  text-align: center;
+}
+.title-inner h1 {
+  font-size: 3rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.title-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 30px;
+}
+.title-menu button {
+  min-width: 280px;
+  padding: 10px 20px;
+}
+.save-panel {
+  margin-top: 30px;
+  text-align: left;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  padding: 18px;
+}
+.save-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.save-slot:last-child {
+  border-bottom: 0;
+}
+.save-actions {
+  display: flex;
+  gap: 6px;
+}
+.signature {
+  margin-top: 30px;
+  font-style: italic;
+}
+.error {
+  color: var(--danger);
+  margin-top: 8px;
+}
+
+/* ─── Character creation ──────────────────────────────────────────────── */
+.creation-screen {
+  flex: 1;
+  padding: 30px 20px;
+  display: flex;
+  justify-content: center;
+}
+.creation-inner {
+  max-width: 1100px;
+  width: 100%;
+}
+.creation-inner header {
+  margin-bottom: 24px;
+}
+.creation-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 16px;
+}
+.creation-stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.class-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+.class-card {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+}
+.class-card.active {
+  background: var(--bg-3);
+  border-color: var(--accent);
+}
+.class-card p {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+}
+.stat-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+.stat-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.2fr;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+.stat-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stat-buttons .stat-value {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 600;
+}
+.stat-name {
+  color: var(--ink-dim);
+}
+.stat-bonus {
+  font-size: 13px;
+}
+.loadout-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.loadout-line:last-child {
+  border-bottom: 0;
+}
+.loadout-line .label {
+  color: var(--ink-dim);
+}
+.creation-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* ─── Game screen ─────────────────────────────────────────────────────── */
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-1);
+}
+.game-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+.game-header .world-header {
+  flex: 1;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  font-size: 12px;
+  color: var(--ink-dim);
+}
+.chip.terrain {
+  color: var(--accent);
+}
+.game-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 280px 1fr 280px;
+  gap: 12px;
+  padding: 12px;
+  overflow: hidden;
+}
+.left-col,
+.right-col,
+.center-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+.center-col .log-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.log-body {
+  flex: 1;
+  min-height: 100px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.log-line {
+  margin: 0 0 4px 0;
+}
+.log-narration {
+  color: var(--ink);
+}
+.log-system {
+  color: var(--ink-dim);
+  font-style: italic;
+}
+.log-good {
+  color: #d9ba7c;
+}
+.log-bad {
+  color: var(--danger);
+}
+.log-combat {
+  color: var(--ink);
+}
+
+/* ─── Character sheet ─────────────────────────────────────────────────── */
+.character-sheet h3 {
+  margin-bottom: 6px;
+}
+.character-sheet .stat-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+  margin-bottom: 4px;
+}
+.character-sheet .danger {
+  color: var(--danger);
+}
+.character-sheet .small {
+  font-size: 12px;
+}
+.link-button {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: underline;
+}
+.link-button:hover {
+  background: none;
+  color: #e8a868;
+}
+
+/* ─── Minimap ─────────────────────────────────────────────────────────── */
+.minimap-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--bg-0);
+  padding: 1px;
+  margin-bottom: 6px;
+}
+.minimap-cell {
+  aspect-ratio: 1;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.minimap-cell.here {
+  outline: 2px solid var(--accent);
+  font-weight: 700;
+  color: var(--accent) !important;
+  background: var(--bg-1) !important;
+}
+.minimap-cell.impassable {
+  opacity: 0.85;
+}
+.legend {
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* ─── Action bar ──────────────────────────────────────────────────────── */
+.action-bar {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: start;
+}
+.dir-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  gap: 4px;
+}
+.dir-pad button {
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.dir-pad button.stay {
+  background: var(--bg-1);
+}
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+}
+
+/* ─── Combat panel ────────────────────────────────────────────────────── */
+.combat-panel {
+  background: linear-gradient(180deg, var(--bg-1), #2a1f1a);
+  border-color: var(--danger-soft);
+}
+.combat-panel h3 {
+  color: var(--danger);
+  border-bottom-color: var(--danger-soft);
+}
+.combat-enemy {
+  margin-bottom: 12px;
+}
+.combat-name strong {
+  font-size: 1.1rem;
+}
+.turn-indicator {
+  color: var(--accent);
+  font-style: italic;
+  margin: 8px 0;
+}
+.combat-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.combat-buttons button {
+  flex: 1;
+  min-width: 120px;
+}
+.combat-finished {
+  text-align: center;
+  padding: 8px 0;
+}
+.combat-finished .primary {
+  margin-top: 8px;
+}
+
+/* ─── Inventory ───────────────────────────────────────────────────────── */
+.equipped {
+  margin-bottom: 12px;
+}
+.inv-list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+.inv-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.inv-item:last-child {
+  border-bottom: 0;
+}
+.inv-name {
+  color: var(--ink);
+}
+.inv-weight {
+  font-size: 12px;
+}
+
+/* ─── Town panel ──────────────────────────────────────────────────────── */
+.town-panel {
+  background: linear-gradient(180deg, var(--bg-1), #2a2218);
+  border-color: var(--accent-soft);
+}
+.town-panel h3 {
+  margin: 0;
+  color: var(--accent);
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.town-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.town-header > div {
+  flex: 1;
+}
+.town-header p {
+  margin: 4px 0 0 0;
+}
+.town-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.town-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  padding: 6px 12px;
+  color: var(--ink-dim);
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+.town-tab:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--bg-2);
+}
+.town-tab.active {
+  background: var(--bg-2);
+  border-color: var(--border);
+  color: var(--accent);
+}
+.town-body {
+  min-height: 180px;
+}
+
+/* Inn / Healer common */
+.tab-inn .primary,
+.tab-healer .primary {
+  margin-top: 10px;
+}
+.tab-inn p,
+.tab-healer p,
+.tab-notice p {
+  margin: 6px 0;
+}
+
+/* Merchant */
+.merchant-meta {
+  margin-bottom: 8px;
+}
+.merchant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.merchant-col h3 {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 3px;
+}
+.stock-row,
+.sell-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+.stock-row:last-child,
+.sell-row:last-child {
+  border-bottom: 0;
+}
+.stock-info,
+.sell-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.stock-name,
+.sell-name {
+  color: var(--ink);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stock-kind {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.sell-meta {
+  font-size: 11px;
+}
+.stock-row button,
+.sell-row button {
+  padding: 4px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ─── Death screen ────────────────────────────────────────────────────── */
+.death-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.death-inner {
+  max-width: 600px;
+  text-align: center;
+}
+.death-inner h1 {
+  color: var(--danger);
+  font-size: 2.4rem;
+}
+.death-inner .panel {
+  margin: 20px 0;
+  text-align: left;
+}
+.death-inner .panel p {
+  margin: 4px 0;
+}
